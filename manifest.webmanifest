@@ -1,28 +1,23 @@
 {
-  "name": "墜落衝擊力估算",
-  "short_name": "墜落衝擊力估算",
-  "description": "墜落衝擊力估算工具（停止時間／停止距離）",
-  "start_url": "./",
-  "scope": "./",
+  "name": "墜落衝擊力教學估算",
+  "short_name": "墜落衝擊力",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0b3d6e",
-  "theme_color": "#0b3d6e",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "lang": "zh-Hant-TW",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./sunmoon_logo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
+      "src": "./sunmoon_logo.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any"
     }
   ]
 }

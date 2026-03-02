@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b1220"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="墜落衝擊力">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.webmanifest?v=104">
 
 <style>
 
@@ -703,11 +703,19 @@ function calc(){
 
   document.getElementById("outMode").textContent = (mode==="time") ? "Δt" : "s";
 
-  // 讓結果自動滑到畫面上方：有「跑感」也不用一直往下找
+  // 讓結果自動滑到畫面上方：有「跑感」也不用一直往下找（iPhone/Android 都穩） 
   const rc = document.getElementById("resultCard");
   if(rc){
-    rc.scrollIntoView({behavior:"smooth", block:"start"});
-    setTimeout(()=>{ try{ window.scrollBy(0,-10); }catch(e){} }, 220);
+    const jump = () => {
+      const y = rc.getBoundingClientRect().top + window.pageYOffset - 12;
+      try{
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }catch(e){
+        window.scrollTo(0, y);
+      }
+    };
+    // 等 DOM 更新與瀏覽器完成 layout，再捲動（避免 Android 沒反應）
+    requestAnimationFrame(()=>requestAnimationFrame(jump));
   }
 }
 
@@ -745,8 +753,12 @@ document.addEventListener("click", function(e){
 /* PWA */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
-  });
+    navigator.serviceWorker.register("./sw.js?v=104").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
+    // 若有新版 SW 接管，強制刷新一次（避免 Android 一直卡舊版）
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+      if(reloaded) return; reloaded = true; window.location.reload();
+    });});
 }
 
 </script>

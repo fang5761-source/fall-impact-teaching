@@ -1,5 +1,5 @@
 // Service Worker for offline support (GitHub Pages friendly)
-const CACHE_NAME = "fall-impact-v1";
+const CACHE_NAME = "fall-impact-v3";
 const ASSETS = [
   "./",
   "./index.html",

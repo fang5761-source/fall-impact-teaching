@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>墜落衝擊力教學估算</title>
+<title>墜落衝擊力估算</title>
 
 <!-- PWA -->
 <meta name="theme-color" content="#0b1220"/>
@@ -12,6 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 
 <style>
+
 :root{
   --bg:#0b1220;--panel:#121a2f;--panel2:#0f172a;--line:#233056;
   --text:#e5e7eb;--muted:#94a3b8;--accent:#38bdf8;
@@ -42,14 +43,14 @@ body{
 }
 .subtitle{font-size:13px;color:var(--muted);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .title-logo{
-  width:56px;height:56px;
+  width:48px;height:48px;
   background-image:url("./sunmoon_logo.png?cb=fall01");
   background-size:contain;
   background-repeat:no-repeat;
   background-position:center;
   opacity:0.55;
-  flex-shrink:0;
-  border-radius:14px;
+  flex:0 0 auto;
+  border-radius:12px;
   filter:
     drop-shadow(0 0 6px rgba(212,175,55,.10))
     drop-shadow(0 0 10px rgba(56,189,248,.10));
@@ -223,6 +224,14 @@ details[open] summary{background:rgba(56,189,248,.06)}
 }
 .meta{font-size:12px;color:#94a3b8;line-height:1.6;margin-top:8px}
 hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
+
+
+@media (max-width: 420px){
+  .title-wrap{gap:10px;}
+  .title-logo{width:40px;height:40px;border-radius:10px;}
+  .title-text h1{font-size:18px;}
+}
+
 </style>
 
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -235,9 +244,9 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   <div class="card hero">
     <div class="title-wrap">
       <div class="title-text">
-        <h1>墜落衝擊力教學估算</h1>
+        <h1>墜落衝擊力估算</h1>
         <div class="title-divider"></div>
-        <div class="subtitle">戰繩｜教學用衝擊力 / G 值理解工具（非醫療診斷）</div>
+        <div class="subtitle">戰繩｜衝擊力 / G 值理解工具（非醫療診斷）</div>
       </div>
       <img class="title-logo" src="./sunmoon_logo.png" alt="散木團隊 LOGO"/>
     </div>
@@ -245,9 +254,9 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
   <div class="card">
     <details id="modelDetails">
-      <summary class="section"><span>計算模型（教學基準）</span></summary>
+      <summary class="section"><span>計算模型（參考基準）</span></summary>
       <div class="explain">
-        <div class="muted">這個工具的核心不是「算出很準」，而是讓學員看懂：<b>停止越快 → 減速度越大 → 衝擊力越大</b>，以及<b>平均力 vs 峰值力</b>的差異。</div>
+        <div class="muted">這個工具的核心不是「算出很準」，而是讓使用者看懂：<b>停止越快 → 減速度越大 → 衝擊力越大</b>，以及<b>平均力 vs 峰值力</b>的差異。</div>
         <hr class="dash"/>
         <b>落地速度</b>
         <div class="mono formula">v = √(2 g h)</div>
@@ -261,7 +270,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
         <b>平均衝擊力（含體重）</b>
         <div class="mono formula">F_avg = m (a + g)</div>
 
-        <b>峰值衝擊力（教學用倍率）</b>
+        <b>峰值衝擊力（倍率）</b>
         <div class="mono formula">F_peak = k × F_avg</div>
 
         <b>G 值</b>
@@ -284,13 +293,13 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       <button type="button" id="btnTime" class="active" onclick="setMode('time')">停止時間 Δt（預設）</button>
       <button type="button" id="btnDist" onclick="setMode('dist')">停止距離 s（替代）</button>
     </div>
-    <div class="hintInline">教學建議：先用 Δt 帶學員理解「同一高度，停止越快越危險」，再切換 s 看「同一高度，停止距離越短越危險」。</div>
+    <div class="hintInline">使用建議：先用 Δt 帶使用者理解「同一高度，停止越快越危險」，再切換 s 看「同一高度，停止距離越短越危險」。</div>
 
     <div class="grid2" style="margin-top:10px">
       <div>
         <label>體重（kg）</label>
         <input id="m" type="number" step="0.1" value="70" inputmode="decimal"/>
-        <div class="hintInline">這裡用「質量」計算（kg）。</div>
+        <div class="hintInline">此處採用「質量」計算（kg）。</div>
       </div>
       <div>
         <label>墜落高度 h（m）</label>
@@ -313,7 +322,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
         <button type="button" onclick="adj('dt',0.05)">+0.05</button>
         <button type="button" onclick="adj('dt',0.10)">+0.10</button>
       </div>
-      <div class="hintInline">Δt 越短，<b>a</b> 越大，衝擊力越大。0.05～0.30 秒常用來做「教學尺度」比較。</div>
+      <div class="hintInline">Δt 越短，<b>a</b> 越大，衝擊力越大。0.05～0.30 秒常用來做「比較尺度」比較。</div>
     </div>
 
     <div id="distBox" style="margin-top:10px; display:none">
@@ -325,16 +334,16 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
         <button type="button" onclick="adj('s',0.05)">+0.05</button>
         <button type="button" onclick="adj('s',0.10)">+0.10</button>
       </div>
-      <div class="hintInline">s 越短，<b>a</b> 越大，衝擊力越大。s 可以用「緩衝變形距離」做教學示意（軟墊、土、雪、裝備變形）。</div>
+      <div class="hintInline">s 越短，<b>a</b> 越大，衝擊力越大。s 可以用「緩衝變形距離」作概念示意（軟墊、土、雪、裝備變形）。</div>
     </div>
 
-    <label style="margin-top:14px">峰值倍率 k（教學用）</label>
+    <label style="margin-top:14px">峰值倍率 k</label>
     <select id="kSel">
       <option value="1">1（理想化：峰值≈平均）</option>
-      <option value="1.5">1.5（一般教學）</option>
+      <option value="1.5">1.5（一般情境）</option>
       <option value="2" selected>2（預設：有尖峰）</option>
     </select>
-    <div class="hintInline">k 用來提醒學員：同一個「平均力」，在真實碰撞中常會出現「尖峰」。<span class="pill">k 不是安全系數</span></div>
+    <div class="hintInline">k 用來提醒使用者：同一個「平均力」，在真實碰撞中常會出現「尖峰」。<span class="pill">k 不是安全系數</span></div>
 
     <div class="actions">
       <button type="button" class="calc" onclick="calc()">計算</button>
@@ -342,11 +351,11 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
     </div>
   </div>
 
-  <div class="card">
-    <div class="section">結果（教學重點）</div>
+  <div class="card" id="resultCard">
+    <div class="section">計算結果</div>
 
     <div class="result-main">
-      <div class="small">峰值衝擊力（重點）</div>
+      <div class="small">峰值衝擊力</div>
       <div class="big" id="outFpk">—</div>
       <div class="small">平均力 <span id="outFav">—</span> ｜G 值 <span id="outG">—</span> ｜模式 <span id="outMode">—</span></div>
       <div id="riskBadge" class="badge mid" style="display:none">—</div>
@@ -367,7 +376,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   </div>
 
   <div class="card">
-    <div class="section">教學圖解（給學員看得懂的那種）</div>
+    <div class="section">圖解（概念示意）</div>
 
     <div class="grid2">
       <div class="svgBox">
@@ -432,7 +441,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
           <circle cx="350" cy="84" r="6" fill="#38bdf8"/>
           <text x="368" y="84" fill="#cbd5f5" font-size="12" font-weight="700">F_peak</text>
 
-          <text x="96" y="224" fill="#94a3b8" font-size="13">k = F_peak / F_avg（教學倍率）</text>
+          <text x="96" y="224" fill="#94a3b8" font-size="13">k = F_peak / F_avg（倍率示意）</text>
         </svg>
         <div class="hintInline">工程版翻譯：平均值不會告訴你尖峰；<b>尖峰常是「傷害」的那一下。</b></div>
       </div>
@@ -441,49 +450,46 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
   <div class="card">
     <details id="injuryDetails">
-      <summary class="section"><span>人體傷害對照表（教學用）</span></summary>
-      <div class="explain">
-        這張表是「教學用尺度」，用來幫學員建立直覺：<b>G 值只是其中一個指標</b>；真正風險還與受力方向、接觸面積、身體姿勢、裝備緩衝、地面材質、反覆撞擊等因素相關。
-        <hr class="dash"/>
-        <table class="table">
+      <summary>人體承受概念對照（參考）</summary>
+      <div class="pad">
+        <div class="small">此表為<strong>概念性</strong>對照，用來幫助理解「停止時間越短、峰值衝擊越高」的趨勢；並非醫療診斷、傷害鑑定或臨床判讀。</div>
+        <table class="table" style="margin-top:10px">
           <thead>
             <tr>
-              <th style="width:34%">區間（以瞬間/短時間加速度做直覺）</th>
-              <th>常見解讀（教學用）</th>
-              <th style="width:18%">提示</th>
+              <th style="width:16%">區間</th>
+              <th>風險概述</th>
+              <th>常見情境（例）</th>
+              <th>重點提醒</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><span class="tag good">約 0–10 G</span></td>
-              <td>多數人可承受的「短時間」範圍（仍可能受傷，尤其落點不佳）。</td>
-              <td>可用來對比「軟墊 vs 硬地」。</td>
+              <td><strong>0–10 G</strong></td>
+              <td>多數情況下可承受，但仍可能因姿勢、落點或既有傷病而受傷。</td>
+              <td>有緩衝介質、翻滾卸力、停止時間較長。</td>
+              <td>仍需注意落點分散與身體保護；避免「以為安全就放鬆」。</td>
             </tr>
             <tr>
-              <td><span class="tag mid">約 10–25 G</span></td>
-              <td>受傷風險顯著上升；若姿勢不對、落點集中、或反覆撞擊，容易出現嚴重傷害。</td>
-              <td>教學重點：把 Δt / s 拉長。</td>
+              <td><strong>10–25 G</strong></td>
+              <td>受傷風險明顯上升；若落點集中或停止時間極短，傷害可能加劇。</td>
+              <td>硬地、停止距離短、系統缺乏緩衝。</td>
+              <td>優先增加停止時間／停止距離（緩衝、延長變形、分散受力）。</td>
             </tr>
             <tr>
-              <td><span class="tag high">25 G 以上</span></td>
-              <td>高風險區間；在沒有良好緩衝/分散受力的情境下，可能造成致命傷害。</td>
-              <td>立刻導回「停止時間」的概念。</td>
+              <td><strong>25+ G</strong></td>
+              <td>高風險區間；在不利條件下可能造成嚴重傷害。</td>
+              <td>高處落地、尖銳落點、幾乎無緩衝。</td>
+              <td>務必檢視系統緩衝、落點保護與救援流程；以風險控制為優先。</td>
             </tr>
           </tbody>
         </table>
-
-        <div class="hintInline" style="margin-top:12px">
-          若你希望把這張表做成「更正式的課綱版」，我們下一版可以改為：依情境（頭部/胸腹/脊椎/四肢）分欄，並加上「常見受傷機轉」。
-        </div>
-
-        <button type="button" class="collapseBtn" data-collapse="#injuryDetails">收合</button>
       </div>
     </details>
   </div>
 
   <div class="card">
     <details id="teachDetails">
-      <summary class="section"><span>教學說明（工程版 / 現場版）</span></summary>
+      <summary class="section"><span>使用說明（工程估算 / 現場應用）</span></summary>
       <div class="explain">
         <b>1) G 值是什麼？</b><br>
         工程版：G = a/g，是「停止有多急」的比例尺。<br>
@@ -494,7 +500,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
         現場版：人不是被「平均」打壞的，是被「那一下」打壞的。<br><br>
 
         <b>3) k（峰值倍率）是什麼？</b><br>
-        工程版：k 是教學用的簡化參數，用來把尖峰概念帶進來（不是材料模型、不是安全係數）。<br>
+        工程版：k 是的簡化參數，用來把尖峰概念帶進來（不是材料模型、不是安全係數）。<br>
         現場版：你把 k 當成「尖峰提醒器」就好：同一個平均力，尖峰可能更高。<br><br>
 
         <b>4) 為什麼停止時間最重要？</b><br>
@@ -533,13 +539,13 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 </div>
 
   <div class="footer">
-    【教學使用聲明】本工具為教學與風險理解輔助使用，所有結果皆為估算值，
+    【使用聲明】本工具為工程估算與風險溝通參考，所有結果皆為估算值，
     不得取代現場判斷、標準作業程序（SOP）、醫療鑑定與安全保護措施。<br>
-    © 2026  / Wu Fang｜墜落衝擊力教學工具
-  </div>
+    © 2026 SunMoon｜墜落衝擊力估算</div>
 </div>
 
 <script>
+
 /* ========= Core ========= */
 const G_STD = 9.80665;
 
@@ -588,9 +594,9 @@ function fmtG(x){ return isFinite(x) ? x.toFixed(1) + " G" : "—"; }
 
 function riskClass(Gv){
   // Teaching thresholds (simple & explicit)
-  if(Gv < 10) return {cls:"good", label:"低（教學尺度）"};
-  if(Gv < 25) return {cls:"mid", label:"中（教學尺度）"};
-  return {cls:"high", label:"高（教學尺度）"};
+  if(Gv < 10) return {cls:"good", label:"低（比較尺度）"};
+  if(Gv < 25) return {cls:"mid", label:"中（比較尺度）"};
+  return {cls:"high", label:"高（比較尺度）"};
 }
 
 function calc(){
@@ -639,7 +645,7 @@ function calc(){
   const core = (mode==="time")
     ? `你現在的 Δt 越短，G 值越高；想讓風險下降，最直接的作法就是「把停止時間拉長」。`
     : `你現在的 s 越短，G 值越高；想讓風險下降，最直接的作法就是「把停止距離拉長」。`;
-  note.textContent = core + `（提醒：這是教學尺度，不是醫療鑑定。）`;
+  note.textContent = core + `（提醒：這是比較尺度，不是醫療鑑定。）`;
 
   document.getElementById("outMode").textContent = (mode==="time") ? "Δt" : "s";
 }
@@ -681,6 +687,7 @@ if("serviceWorker" in navigator){
     navigator.serviceWorker.register("./sw.js").catch(()=>{});
   });
 }
+
 </script>
 
 </body>

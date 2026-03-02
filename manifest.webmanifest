@@ -1,7 +1,7 @@
 {
-  "name": "墜落衝擊力",
-  "short_name": "衝擊力",
-  "description": "墜落衝擊力估算工具（教學用）",
+  "name": "墜落衝擊力估算",
+  "short_name": "墜落衝擊力估算",
+  "description": "墜落衝擊力估算工具（停止時間／停止距離）",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

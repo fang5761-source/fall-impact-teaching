@@ -27,6 +27,11 @@ body{
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
 }
+
+/* Mobile UX tweaks */
+html{-webkit-text-size-adjust:100%;}
+button,input,select,summary{touch-action:manipulation;}
+
 .wrap{max-width:860px;margin:0 auto;padding:16px;}
 .card{
   background:linear-gradient(180deg,var(--panel),var(--panel2));
@@ -95,6 +100,7 @@ input,select{
   background:#020617;
   color:#cbd5f5;
   font-weight:900;
+  font-size:16px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -115,9 +121,11 @@ input,select{
 .quick button{
   background:#020617;border:1px solid var(--line);color:var(--text);
   padding:10px;border-radius:999px;font-weight:800;
+  font-size:14px;
 }
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.actions button{padding:12px;border-radius:14px;border:0;font-weight:900;font-size:15px}
+.actions button{padding:12px;border-radius:14px;border:0;font-weight:900;font-size:16px;
+font-size:15px}
 .calc{background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#020617}
 .reset{background:#020617;color:#cbd5f5;border:1px solid var(--line)}
 
@@ -572,25 +580,42 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
     </details>
 
     <details id="addToHome" style="margin-top:12px">
-      <summary class="section"><span>加入主畫面（PWA / 離線）</span></summary>
+      <summary class="section"><span>加入主畫面（選用）</span></summary>
       <div class="explain">
-        你可以直接點開連結使用，不一定要加入主畫面。<br>
-        如果希望像 APP 一樣、並支援離線，請依照下面步驟：<br><br>
+你可以直接點開連結使用，不一定要加入主畫面。<br>
+如果希望之後開啟更方便，可以依照下面步驟將連結加入主畫面：<br><br>
 
-        <b>Android（建議：Chrome）</b><br>
-        1. 用 Chrome 開啟此工具連結<br>
-        2. 右上角「⋮」→ <b>安裝應用程式</b> 或 <b>加入主畫面</b><br>
-        3. 安裝後可離線使用（第一次需連網載入）<br><br>
+<b>iOS（iPhone）</b><br>
+1. 點開連結（可直接從 LINE 開啟）<br>
+2. 點選下方的「分享」圖示，往下滑<br>
+3. 選擇「加入主畫面」<br>
+4. 點選「加入」，即可將連結加到主畫面<br><br>
 
-        <b>iOS（iPhone / iPad）</b><br>
-        1. 用 Safari 開啟<br>
-        2. 分享 → <b>加入主畫面</b><br>
-        3. iOS 離線可用程度依版本略有差異，但可做為捷徑使用<br>
+<b>Android（Samsung、其他 Android 手機）</b><br>
+1. 點開連結（可直接從 LINE 開啟）<br>
+2. 點選畫面右下角的「⋮」<br>
+3. 選擇「使用預設瀏覽器開啟」<br>
+4. 在畫面右上角點選「⋮」<br>
+5. 往下滑，選擇「加到主畫面」<br>
+6. 點選「新增」或「安裝」，即可將連結加到主畫面<br>
+
 
         <button type="button" class="collapseBtn" data-collapse="#addToHome">收合</button>
       </div>
     </details>
 </div>
+
+
+  <div class="card">
+    <div class="section">開發與版本資訊</div>
+    <div class="meta">
+      本工具由 散木團隊 開發製作<br>
+      教學架構與工程判斷 / 徐也豐<br>
+      工具設計與互動介面 / 吳佩芳（朵朵）<br>
+      AI 協作輔助 / ChatGPT<br><br>
+      <b>版本：v1.2.5｜2026</b>
+    </div>
+  </div>
 
   <div class="footer">
     【使用聲明】本工具為工程估算與風險溝通參考，所有結果皆為估算值，
@@ -760,6 +785,23 @@ if("serviceWorker" in navigator){
       if(reloaded) return; reloaded = true; window.location.reload();
     });});
 }
+
+
+/* iOS: reduce accidental double-tap zoom on controls (keep pinch-zoom) */
+(function(){
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e){
+    const now = Date.now();
+    if(now - lastTouchEnd <= 300){
+      // Only block if the target is an interactive control or inside one
+      const t = e.target;
+      if(t.closest && (t.closest('button') || t.closest('summary') || t.closest('input') || t.closest('select'))){
+        e.preventDefault();
+      }
+    }
+    lastTouchEnd = now;
+  }, {passive:false});
+})();
 
 </script>
 

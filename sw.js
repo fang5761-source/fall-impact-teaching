@@ -2,7 +2,7 @@
 const CACHE_NAME = "fall-impact-v1-2026";
 const ASSETS = [
   "./",
-  "./fall_impact_app.html",
+  "./index.html",
   "./manifest.webmanifest",
   "./sunmoon_logo.png"
 ];
@@ -30,7 +30,7 @@ self.addEventListener("fetch", (event) => {
         const copy = res.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
         return res;
-      }).catch(() => caches.match(req).then((r) => r || caches.match("./fall_impact_app.html")))
+      }).catch(() => caches.match(req).then((r) => r || caches.match("./index.html")))
     );
     return;
   }

@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b1220"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="墜落衝擊力">
-<link rel="manifest" href="manifest.webmanifest?v=104">
+<link rel="manifest" href="manifest.webmanifest?v=106">
 
 <style>
 
@@ -39,28 +39,26 @@ button,input,select,summary{touch-action:manipulation;}
   padding:18px;margin-bottom:14px;border:1px solid var(--line);
 }
 .card.hero{padding:18px 18px 16px}
-.title-wrap{display:flex;align-items:center;justify-content:space-between;gap:14px}
-.title-text{min-width:0;}
-.title-text h1{margin:0;font-size:20px;font-weight:1000;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.title-wrap{display:flex;flex-direction:column;gap:10px}
+.title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.title-row h1{margin:0;font-size:20px;font-weight:1000;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .title-divider{
   width:100%;
   height:1px;
-  margin:10px 0 8px;
+  margin:2px 0 2px;
   background:linear-gradient(90deg,transparent,var(--goldA),var(--goldB),var(--goldA),transparent);
 }
-.subtitle{font-size:13px;color:var(--muted);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.subtitle{font-size:13px;color:var(--muted);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .title-logo{
-  width:48px;height:48px;
+  width:44px;height:44px;
   background-image:url("./sunmoon_logo.png?cb=fall01");
   background-size:contain;
   background-repeat:no-repeat;
   background-position:center;
-  opacity:0.55;
+  opacity:.92;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
+  border-radius:10px;
   flex:0 0 auto;
-  border-radius:12px;
-  filter:
-    drop-shadow(0 0 6px rgba(212,175,55,.10))
-    drop-shadow(0 0 10px rgba(56,189,248,.10));
 }
 
 .section{font-size:15px;font-weight:900;margin-bottom:10px}
@@ -140,10 +138,24 @@ font-size:15px}
 .mid{background:#3a2503;color:#f59e0b}
 .high{background:#3b0a0a;color:#ef4444}
 
-.kv{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:10px 0;gap:12px}
+.kvBox{
+  margin-top:14px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  background:rgba(4,8,18,.35);
+}
+.kv{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:14px;
+  padding:12px 14px;
+  border-bottom:1px dashed var(--line);
+}
 .kv:last-child{border-bottom:0}
-.kv > div:first-child{color:#cbd5f5;font-weight:800}
-.kv > div:last-child{font-weight:900}
+.kv > div:first-child{color:#cbd5f5;font-weight:900;letter-spacing:.2px}
+.kv > div:last-child{font-weight:950;text-align:right}
 
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,"Roboto Mono","Noto Sans Mono CJK TC",monospace}
 .mono.formula{
@@ -272,14 +284,12 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
 
 @media (max-width: 420px){
-  .title-text h1{white-space:normal;}
-  .subtitle{white-space:normal;}
-  .title-text h1{overflow:visible;text-overflow:clip;}
+      .title-row h1{overflow:visible;text-overflow:clip;}
   .subtitle{overflow:visible;text-overflow:clip;}
 
   .title-wrap{gap:10px;}
   .title-logo{width:40px;height:40px;border-radius:10px;}
-  .title-text h1{font-size:18px;}
+  .title-row h1{font-size:18px;}
 }
 
 </style>
@@ -293,13 +303,16 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 <div class="wrap">
   <div class="card hero">
     <div class="title-wrap">
-      <div class="title-text">
+      <div class="title-row">
         <h1>墜落衝擊力估算</h1>
-        <div class="title-divider"></div>
-        <div class="subtitle">戰繩｜衝擊力 / G 值理解工具（非醫療診斷）</div>
+        <img class="title-logo" src="./sunmoon_logo.png" alt="散木團隊 LOGO"/>
       </div>
-      <img class="title-logo" src="./sunmoon_logo.png" alt="散木團隊 LOGO"/>
+      <div class="title-divider"></div>
+      <div class="subtitle">戰繩｜衝擊力 / G 值理解工具（非醫療診斷）</div>
     </div>
+  </div>
+
+  </div>
   </div>
 
   <div class="card">
@@ -412,7 +425,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       <div class="hintInline" id="riskNote" style="margin-top:10px; display:none"></div>
     </div>
 
-    <div style="margin-top:14px">
+    <div class="kvBox">
       <div class="kv"><div>落地速度 v</div><div id="outV">—</div></div>
       <div class="kv"><div>減速度 a</div><div id="outA">—</div></div>
       <div class="kv"><div>G 值（a/g）</div><div id="outG2">—</div></div>
@@ -508,8 +521,8 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
   <div class="card">
     <details id="injuryDetails">
-      <summary>人體承受概念對照（參考）</summary>
-      <div class="pad">
+      <summary class="section"><span>人體承受概念對照（參考）</span></summary>
+      <div class="explain">
         <div class="small">此表為<strong>概念性</strong>對照，用來幫助理解「停止時間越短、峰值衝擊越高」的趨勢；並非醫療診斷、傷害鑑定或臨床判讀。</div>
         <div class="tableHint">提示：手機可左右滑動表格，閱讀會比較舒服。</div>
         <div class="tableWrap" style="margin-top:10px">
@@ -607,14 +620,19 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
 
   <div class="card">
-    <div class="section">開發與版本資訊</div>
-    <div class="meta">
-      本工具由 散木團隊 開發製作<br>
-      教學架構與工程判斷 / 徐也豐<br>
+    <details id="devDetails">
+      <summary class="section"><span>開發與版本資訊</span></summary>
+      <div class="explain">
+        <div class="meta">
+本工具由 散木團隊 開發製作<br>
+      教學架構與工程判斷 / 徐世豐<br>
       工具設計與互動介面 / 吳佩芳（朵朵）<br>
       AI 協作輔助 / ChatGPT<br><br>
       <b>版本：v1.2.5｜2026</b>
-    </div>
+        </div>
+        <button type="button" class="collapseBtn" data-collapse="#devDetails">收合</button>
+      </div>
+    </details>
   </div>
 
   <div class="footer">
@@ -778,7 +796,7 @@ document.addEventListener("click", function(e){
 /* PWA */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("./sw.js?v=104").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
+    navigator.serviceWorker.register("./sw.js?v=106").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
     // 若有新版 SW 接管，強制刷新一次（避免 Android 一直卡舊版）
     let reloaded = false;
     navigator.serviceWorker.addEventListener("controllerchange", ()=>{

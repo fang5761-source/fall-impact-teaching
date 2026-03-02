@@ -22,10 +22,10 @@
 *{box-sizing:border-box;}
 body{
   margin:0;
-  overflow-x:hidden;
   background:radial-gradient(1200px 600px at 10% -20%, #1e293b 0%, transparent 50%),var(--bg);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  overflow-x:hidden;
 }
 .wrap{max-width:860px;margin:0 auto;padding:16px;}
 .card{
@@ -35,7 +35,6 @@ body{
 }
 .card.hero{padding:18px 18px 16px}
 .title-wrap{display:flex;align-items:center;justify-content:space-between;gap:14px}
-.title-text{min-width:0;}
 .title-text h1{margin:0;font-size:20px;font-weight:1000;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .title-divider{
   width:100%;
@@ -82,8 +81,20 @@ input,select{
 
 .toggle{display:flex;gap:8px;margin-top:6px}
 .toggle button{
-  flex:1;padding:10px;border-radius:999px;border:1px solid var(--line);
-  background:#020617;color:#cbd5f5;font-weight:900
+  flex:1;
+  padding:12px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#020617;
+  color:#cbd5f5;
+  font-weight:900;
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:1.15;
+  white-space:normal;
 }
 .toggle button.active{
   background:linear-gradient(135deg,#38bdf8,#0ea5e9);
@@ -229,15 +240,28 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
 
 @media (max-width: 420px){
-  .title-text h1{white-space:normal;}
-  .subtitle{white-space:normal;}
-  .title-text h1{overflow:visible;text-overflow:clip;}
-  .subtitle{overflow:visible;text-overflow:clip;}
-
   .title-wrap{gap:10px;}
   .title-logo{width:40px;height:40px;border-radius:10px;}
   .title-text h1{font-size:18px;}
 }
+
+
+/* --- Mobile UX fixes v1.0.2 --- */
+@media (max-width:520px){
+  .toggle{flex-wrap:wrap;}
+  .toggle button{flex:1 1 calc(50% - 8px);}
+}
+/* bottom collapse button */
+.collapseRow{display:flex;justify-content:center;margin-top:12px}
+.collapseBtn{
+  padding:10px 14px;border-radius:999px;border:1px solid var(--line);
+  background:#020617;color:#cbd5f5;font-weight:900;
+}
+/* table readability */
+.tableWrap{overflow:auto;border-radius:14px;border:1px solid var(--line);background:#020617}
+.tableHint{color:var(--muted);font-size:12px;margin:8px 2px 10px}
+.tableWrap table{min-width:760px}
+.tableWrap th,.tableWrap td{padding:14px 14px;vertical-align:top;line-height:1.45}
 
 </style>
 
@@ -383,8 +407,9 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   </div>
 
   <div class="card">
-    <div class="section">圖解（概念示意）</div>
-
+    <details id="diagramDetails">
+      <summary>圖解（概念示意）</summary>
+      <div style="margin-top:10px">
     <div class="grid2">
       <div class="svgBox">
         <div class="svgTitle">圖 1｜墜落 → 停止：同一高度，停止越快越危險</div>
@@ -454,13 +479,21 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       </div>
     </div>
   </div>
+        <div class="collapseRow">
+          <button type="button" class="collapseBtn" onclick="collapseDetails('diagramDetails')">收合</button>
+        </div>
+      </div>
+    </details>
+  </div>
 
   <div class="card">
     <details id="injuryDetails">
       <summary>人體承受概念對照（參考）</summary>
       <div class="pad">
         <div class="small">此表為<strong>概念性</strong>對照，用來幫助理解「停止時間越短、峰值衝擊越高」的趨勢；並非醫療診斷、傷害鑑定或臨床判讀。</div>
-        <table class="table" style="margin-top:10px">
+        <div class="tableHint">手機可左右滑動表格，閱讀會更舒服。</div>
+        <div class="tableWrap">
+          <table class="table">
           <thead>
             <tr>
               <th style="width:16%">區間</th>
@@ -490,6 +523,8 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
             </tr>
           </tbody>
         </table>
+        </div>
+        <div class="collapseRow"><button type="button" class="collapseBtn" onclick="collapseDetails('injuryDetails')">收合</button></div>
       </div>
     </details>
   </div>
@@ -655,6 +690,22 @@ function calc(){
   note.textContent = core + `（提醒：這是比較尺度，不是醫療鑑定。）`;
 
   document.getElementById("outMode").textContent = (mode==="time") ? "Δt" : "s";
+
+  // smooth jump to results (teaching "feel")
+  const rc = document.getElementById('resultCard');
+  if(rc){
+    rc.scrollIntoView({behavior:'smooth', block:'start'});
+    setTimeout(()=>window.scrollBy(0,-10), 250);
+  }
+}
+
+
+function collapseDetails(id){
+  const d = document.getElementById(id);
+  if(!d) return;
+  d.open = false;
+  const y = d.getBoundingClientRect().top + window.scrollY - 12;
+  window.scrollTo({top:y, behavior:"smooth"});
 }
 
 function resetAll(){

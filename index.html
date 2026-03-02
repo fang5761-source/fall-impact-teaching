@@ -157,6 +157,31 @@ font-size:15px}
 .kv > div:first-child{color:#cbd5f5;font-weight:900;letter-spacing:.2px}
 .kv > div:last-child{font-weight:950;text-align:right}
 
+.kvTagRow{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:10px 14px;
+  border-bottom:1px dashed var(--line);
+  background:rgba(6,10,22,.35);
+}
+.kvTag{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(2,6,16,.35);
+  color:#e2e8ff;
+  font-weight:950;
+  font-size:13px;
+  letter-spacing:.2px;
+}
+.kvTagGhost{
+  opacity:.78;
+  font-weight:900;
+}
+
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,"Roboto Mono","Noto Sans Mono CJK TC",monospace}
 .mono.formula{
   display:block;
@@ -308,7 +333,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
         <img class="title-logo" src="./sunmoon_logo.png" alt="散木團隊 LOGO"/>
       </div>
       <div class="title-divider"></div>
-      <div class="subtitle">戰繩｜衝擊力 / G 值理解工具（非醫療診斷）</div>
+      <div class="subtitle">散木｜衝擊力 / G 值理解工具（非醫療診斷）</div>
     </div>
   </div>
 
@@ -426,12 +451,21 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
     </div>
 
     <div class="kvBox">
+      <div class="kvTagRow">
+        <span class="kvTag">速度與減速</span>
+        <span class="kvTag kvTagGhost">先看 v → a → G</span>
+      </div>
       <div class="kv"><div>落地速度 v</div><div id="outV">—</div></div>
       <div class="kv"><div>減速度 a</div><div id="outA">—</div></div>
       <div class="kv"><div>G 值（a/g）</div><div id="outG2">—</div></div>
+
+      <div class="kvTagRow">
+        <span class="kvTag">力量（衝擊）</span>
+        <span class="kvTag kvTagGhost">再看 F_avg / F_peak</span>
+      </div>
       <div class="kv"><div>平均衝擊力 F_avg</div><div id="outFav2">—</div></div>
       <div class="kv"><div>峰值衝擊力 F_peak</div><div id="outFpk2">—</div></div>
-    </div>
+    </div></div>
 
     <div class="hintInline" style="margin-top:12px">
       讀法提示：先看 <b>G 值</b> 理解「停止有多急」，再看 <b>F_peak</b> 理解「尖峰力有多猛」。

@@ -1,7 +1,7 @@
 {
   "name": "墜落衝擊力教學估算",
   "short_name": "墜落衝擊力",
-  "start_url": "./fall_impact_app.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0b1220",
   "theme_color": "#0b1220",

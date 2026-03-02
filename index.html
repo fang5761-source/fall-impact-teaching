@@ -22,10 +22,10 @@
 *{box-sizing:border-box;}
 body{
   margin:0;
+  overflow-x:hidden;
   background:radial-gradient(1200px 600px at 10% -20%, #1e293b 0%, transparent 50%),var(--bg);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
-  overflow-x:hidden;
 }
 .wrap{max-width:860px;margin:0 auto;padding:16px;}
 .card{
@@ -35,6 +35,7 @@ body{
 }
 .card.hero{padding:18px 18px 16px}
 .title-wrap{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.title-text{min-width:0;}
 .title-text h1{margin:0;font-size:20px;font-weight:1000;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .title-divider{
   width:100%;
@@ -79,16 +80,21 @@ input,select{
   color:var(--muted);
 }
 
-.toggle{display:flex;gap:8px;margin-top:6px}
+.toggle{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:6px;
+}
 .toggle button{
-  flex:1;
-  padding:12px 10px;
+  width:100%;
+  min-height:52px;
+  padding:12px 14px;
   border-radius:999px;
   border:1px solid var(--line);
   background:#020617;
   color:#cbd5f5;
   font-weight:900;
-  min-height:56px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -98,8 +104,13 @@ input,select{
 }
 .toggle button.active{
   background:linear-gradient(135deg,#38bdf8,#0ea5e9);
-  color:#020617;border:0
+  color:#020617;
+  border:0;
 }
+@media (max-width:420px){
+  .toggle{grid-template-columns:1fr;}
+}
+
 .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
 .quick button{
   background:#020617;border:1px solid var(--line);color:var(--text);
@@ -226,6 +237,19 @@ details[open] summary{background:rgba(56,189,248,.06)}
 .tag.mid{background:#3a2503;color:#f59e0b}
 .tag.high{background:#3b0a0a;color:#ef4444}
 
+.tableWrap{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  border-radius:14px;
+}
+.table{min-width:720px;}
+.tableHint{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
 .footer{
   font-size:12px;color:#cbd5f5;
   line-height:1.6;
@@ -240,28 +264,15 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
 
 @media (max-width: 420px){
+  .title-text h1{white-space:normal;}
+  .subtitle{white-space:normal;}
+  .title-text h1{overflow:visible;text-overflow:clip;}
+  .subtitle{overflow:visible;text-overflow:clip;}
+
   .title-wrap{gap:10px;}
   .title-logo{width:40px;height:40px;border-radius:10px;}
   .title-text h1{font-size:18px;}
 }
-
-
-/* --- Mobile UX fixes v1.0.2 --- */
-@media (max-width:520px){
-  .toggle{flex-wrap:wrap;}
-  .toggle button{flex:1 1 calc(50% - 8px);}
-}
-/* bottom collapse button */
-.collapseRow{display:flex;justify-content:center;margin-top:12px}
-.collapseBtn{
-  padding:10px 14px;border-radius:999px;border:1px solid var(--line);
-  background:#020617;color:#cbd5f5;font-weight:900;
-}
-/* table readability */
-.tableWrap{overflow:auto;border-radius:14px;border:1px solid var(--line);background:#020617}
-.tableHint{color:var(--muted);font-size:12px;margin:8px 2px 10px}
-.tableWrap table{min-width:760px}
-.tableWrap th,.tableWrap td{padding:14px 14px;vertical-align:top;line-height:1.45}
 
 </style>
 
@@ -408,9 +419,11 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
   <div class="card">
     <details id="diagramDetails">
-      <summary>圖解（概念示意）</summary>
-      <div style="margin-top:10px">
-    <div class="grid2">
+      <summary class="section"><span>圖解（概念示意）</span></summary>
+      <div class="explain">
+        <div class="muted">這兩張圖是「教學視覺化」：不用背公式，先看趨勢。</div>
+        <hr class="dash"/>
+        <div class="grid2">
       <div class="svgBox">
         <div class="svgTitle">圖 1｜墜落 → 停止：同一高度，停止越快越危險</div>
         <svg viewBox="0 0 560 240" width="100%" height="220" role="img" aria-label="fall diagram">
@@ -478,21 +491,20 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
         <div class="hintInline">工程版翻譯：平均值不會告訴你尖峰；<b>尖峰常是「傷害」的那一下。</b></div>
       </div>
     </div>
-  </div>
-        <div class="collapseRow">
-          <button type="button" class="collapseBtn" onclick="collapseDetails('diagramDetails')">收合</button>
-        </div>
+        <button type="button" class="collapseBtn" data-collapse="#diagramDetails">收合</button>
       </div>
     </details>
   </div>
+
+</div>
 
   <div class="card">
     <details id="injuryDetails">
       <summary>人體承受概念對照（參考）</summary>
       <div class="pad">
         <div class="small">此表為<strong>概念性</strong>對照，用來幫助理解「停止時間越短、峰值衝擊越高」的趨勢；並非醫療診斷、傷害鑑定或臨床判讀。</div>
-        <div class="tableHint">手機可左右滑動表格，閱讀會更舒服。</div>
-        <div class="tableWrap">
+        <div class="tableHint">提示：手機可左右滑動表格，閱讀會比較舒服。</div>
+        <div class="tableWrap" style="margin-top:10px">
           <table class="table">
           <thead>
             <tr>
@@ -524,7 +536,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
           </tbody>
         </table>
         </div>
-        <div class="collapseRow"><button type="button" class="collapseBtn" onclick="collapseDetails('injuryDetails')">收合</button></div>
+        <button type="button" class="collapseBtn" data-collapse="#injuryDetails">收合</button>
       </div>
     </details>
   </div>
@@ -691,21 +703,12 @@ function calc(){
 
   document.getElementById("outMode").textContent = (mode==="time") ? "Δt" : "s";
 
-  // smooth jump to results (teaching "feel")
-  const rc = document.getElementById('resultCard');
+  // 讓結果自動滑到畫面上方：有「跑感」也不用一直往下找
+  const rc = document.getElementById("resultCard");
   if(rc){
-    rc.scrollIntoView({behavior:'smooth', block:'start'});
-    setTimeout(()=>window.scrollBy(0,-10), 250);
+    rc.scrollIntoView({behavior:"smooth", block:"start"});
+    setTimeout(()=>{ try{ window.scrollBy(0,-10); }catch(e){} }, 220);
   }
-}
-
-
-function collapseDetails(id){
-  const d = document.getElementById(id);
-  if(!d) return;
-  d.open = false;
-  const y = d.getBoundingClientRect().top + window.scrollY - 12;
-  window.scrollTo({top:y, behavior:"smooth"});
 }
 
 function resetAll(){

@@ -1,5 +1,5 @@
 /* sw.js — simple offline cache for the teaching app */
-const CACHE_NAME = "fall-impact-v104-2026";
+const CACHE_NAME = "fall-impact-v2-2026";
 const ASSETS = [
   "./",
   "./index.html",
@@ -30,7 +30,7 @@ self.addEventListener("fetch", (event) => {
         const copy = res.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
         return res;
-      }).catch(() => caches.match(req).then((r) => r || caches.match("./index.html")))
+      }).catch(() => caches.match(req).then((r) => r || caches.match("./fall_impact_app.html")))
     );
     return;
   }

@@ -1,45 +1,58 @@
-/* sw.js — simple offline cache for the teaching app */
-const CACHE_NAME = "fall-impact-v2-2026";
-const ASSETS = [
+/* sw.js — 墜落衝擊力估算 (cache v108) */
+const CACHE_NAME = "fall-impact-v108";
+const CORE_ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./sunmoon_logo.png"
 ];
 
+// Install: cache core
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting())
   );
 });
 
+// Activate: clean old
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : Promise.resolve())))
     ).then(() => self.clients.claim())
   );
 });
 
+// Fetch: network-first for HTML, cache-first for others
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  // network-first for navigation, cache-first for assets
-  if(req.mode === "navigate"){
+  const url = new URL(req.url);
+
+  // only handle same-origin
+  if (url.origin !== self.location.origin) return;
+
+  const isHTML = req.headers.get("accept")?.includes("text/html") || url.pathname.endsWith(".html") || url.pathname === "/" || url.pathname.endsWith("/");
+
+  if (isHTML) {
     event.respondWith(
-      fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-        return res;
-      }).catch(() => caches.match(req).then((r) => r || caches.match("./fall_impact_app.html")))
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          return res;
+        })
+        .catch(() => caches.match(req).then((r) => r || caches.match("./index.html")))
     );
     return;
   }
 
   event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req).then((res) => {
-      const copy = res.clone();
-      caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-      return res;
-    }).catch(() => cached))
+    caches.match(req).then((cached) => {
+      if (cached) return cached;
+      return fetch(req).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        return res;
+      });
+    })
   );
 });

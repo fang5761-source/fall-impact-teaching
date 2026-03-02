@@ -20,4 +20,6 @@
       "purpose": "any"
     }
   ]
+,
+  "scope": "./"
 }

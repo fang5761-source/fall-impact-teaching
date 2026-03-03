@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b1220"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="墜落衝擊力">
-<link rel="manifest" href="manifest.webmanifest?v=108">
+<link rel="manifest" href="manifest.webmanifest?v=109">
 
 <style>
 
@@ -67,12 +67,7 @@ input,select{
   width:100%;padding:12px;border-radius:14px;border:1px solid var(--line);
   background:#020617;color:var(--text);font-size:15px;
 }
-.hintInline{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:6px;
-  line-height:1.55;
-}
+.hintInline{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.55;overflow-wrap:anywhere;word-break:break-word}
 .hintInline .pill{
   display:inline-block;
   padding:2px 8px;
@@ -319,23 +314,25 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
 
 /* --- Result help + dynamic interpretation --- */
-.kvL{display:flex;align-items:center;gap:10px;min-width:0}
-.kvLabel{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kvL{display:flex;align-items:center;gap:8px;min-width:0}
+.kvLabel{min-width:0;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2;word-break:break-word}
 .q{
-  width:22px;height:22px;
+  width:20px;height:20px;
   border-radius:999px;
   border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
+  background:rgba(255,255,255,.02);
   color:#cbd5f5;
   font-weight:1000;
-  font-size:13px;
+  font-size:12px;
   line-height:1;
   display:inline-flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
   flex:0 0 auto;
+  opacity:.75;
 }
+.q:hover{opacity:1;background:rgba(255,255,255,.05)}
 .q:active{transform:scale(.98);background:rgba(255,255,255,.07)}
 .q:focus{outline:2px solid rgba(56,189,248,.35);outline-offset:2px}
 
@@ -349,6 +346,14 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 .dynTitle{font-weight:1000;color:#e2e8ff;letter-spacing:.2px;margin-bottom:6px}
 .dynText{font-size:13px;color:#cbd5f5;line-height:1.6}
 .dynTips{margin-top:8px;font-size:12px;color:var(--muted);line-height:1.6}
+.dynBody{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.dynRow{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02)}
+.dynRowTop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dynKey{font-weight:950;color:#e5e7ff;letter-spacing:.2px}
+.dynChip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(56,189,248,.08);color:#cfefff;font-weight:900;font-size:12px}
+.dynDesc{color:#cbd5f5;font-size:13px;line-height:1.55}
+.dynAdvice{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px;padding:10px 12px;border:1px dashed var(--line);border-radius:16px;background:rgba(255,255,255,.01);color:var(--muted);font-size:12px;line-height:1.55}
+
 .dynTips .pill{
   display:inline-block;
   padding:2px 8px;
@@ -535,8 +540,17 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
     </div>
     <div class="dynBox" id="dynBox" style="display:none">
       <div class="dynTitle">動態判讀（教學用）</div>
-      <div class="dynText" id="dynText">—</div>
-      <div class="dynTips" id="dynTips">—</div>
+      <div class="dynBody" id="dynBody">
+        <div class="dynRow">
+          <div class="dynRowTop"><span class="dynKey">G 值區間</span><span class="dynChip" id="dynGBand">—</span></div>
+          <div class="dynDesc" id="dynGMsg">—</div>
+        </div>
+        <div class="dynRow">
+          <div class="dynRowTop"><span class="dynKey">峰值區間</span><span class="dynChip" id="dynFBand">—</span></div>
+          <div class="dynDesc" id="dynFMsg">—</div>
+        </div>
+        <div class="dynAdvice"><span class="pill">教學提示</span><span id="dynAdviceText">—</span></div>
+      </div>
     </div>
 </div>
 
@@ -922,8 +936,11 @@ function calc(){
 
   // 動態判讀（依 G / F_peak / 模式）
   const dynBox = document.getElementById("dynBox");
-  const dynText = document.getElementById("dynText");
-  const dynTips = document.getElementById("dynTips");
+  const dynGBand = document.getElementById("dynGBand");
+  const dynGMsg = document.getElementById("dynGMsg");
+  const dynFBand = document.getElementById("dynFBand");
+  const dynFMsg = document.getElementById("dynFMsg");
+  const dynAdviceText = document.getElementById("dynAdviceText");
   const fpkKN = Fpk/1000;
 
   let gBand, gMsg;
@@ -941,8 +958,11 @@ function calc(){
     ? `目前使用 Δt 模式：Δt = ${document.getElementById("dt").value} 秒。把 Δt 拉長，通常能有效降低 G 與衝擊。`
     : `目前使用 s 模式：s = ${document.getElementById("s").value} m。把停止距離拉長（緩衝/變形/分散），通常能降低 G 與衝擊。`;
 
-  dynText.textContent = `G 值區間：${gBand} → ${gMsg}｜峰值區間：${fBand} → ${fMsg}`;
-  dynTips.innerHTML = `<span class="pill">教學提示</span>${modeMsg}`;
+  dynGBand.textContent = gBand;
+  dynGMsg.textContent = gMsg;
+  dynFBand.textContent = fBand;
+  dynFMsg.textContent = fMsg;
+  dynAdviceText.textContent = modeMsg;
   dynBox.style.display = "";
 
   document.getElementById("outMode").textContent = (mode==="time") ? "Δt" : "s";
@@ -983,10 +1003,16 @@ function resetAll(){
   note.textContent = "";
   const dynBox = document.getElementById("dynBox");
   if(dynBox) dynBox.style.display = "none";
-  const dynText = document.getElementById("dynText");
-  const dynTips = document.getElementById("dynTips");
-  if(dynText) dynText.textContent = "—";
-  if(dynTips) dynTips.textContent = "—";
+  const dynGBand = document.getElementById("dynGBand");
+  const dynGMsg = document.getElementById("dynGMsg");
+  const dynFBand = document.getElementById("dynFBand");
+  const dynFMsg = document.getElementById("dynFMsg");
+  const dynAdviceText = document.getElementById("dynAdviceText");
+  if(dynGBand) dynGBand.textContent = "—";
+  if(dynGMsg) dynGMsg.textContent = "—";
+  if(dynFBand) dynFBand.textContent = "—";
+  if(dynFMsg) dynFMsg.textContent = "—";
+  if(dynAdviceText) dynAdviceText.textContent = "—";
 }
 
 /* collapse buttons */
@@ -1003,7 +1029,7 @@ document.addEventListener("click", function(e){
 /* PWA */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("./sw.js?v=108").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
+    navigator.serviceWorker.register("./sw.js?v=109").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
     // 若有新版 SW 接管，強制刷新一次（避免 Android 一直卡舊版）
     let reloaded = false;
     navigator.serviceWorker.addEventListener("controllerchange", ()=>{

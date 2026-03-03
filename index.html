@@ -9,9 +9,10 @@
 <meta name="theme-color" content="#0b1220"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="墜落衝擊力">
-<link rel="manifest" href="manifest.webmanifest?v=120">
+<link rel="manifest" href="manifest.webmanifest?v=123">
 
 <style>
+
 :root{
   --bg:#0b1220;--panel:#121a2f;--panel2:#0f172a;--line:#233056;
   --text:#e5e7eb;--muted:#94a3b8;--accent:#38bdf8;
@@ -42,7 +43,7 @@ body{
 .subtitle{font-size:13px;color:var(--muted);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .title-logo{
   width:48px;height:48px;
-  background-image:url("./sunmoon_logo.png?cb=fall120");
+  background-image:url("./sunmoon_logo.png?cb=fall123");
   background-size:contain;background-repeat:no-repeat;background-position:center;
   opacity:0.55; flex:0 0 auto; border-radius:12px;
   filter:drop-shadow(0 0 6px rgba(212,175,55,.10)) drop-shadow(0 0 10px rgba(56,189,248,.10));
@@ -99,6 +100,9 @@ details summary:active{background:rgba(255,255,255,.07)}
 details[open] summary{background:rgba(56,189,248,.06)}
 .explain{font-size:13px;color:#cbd5f5;line-height:1.55;margin-top:10px}
 .explain .muted{color:var(--muted)}
+/* nestedDetails */
+.explain details{margin:0}
+.explain details + details{margin-top:10px}
 hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
 .footer{
@@ -112,28 +116,18 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 }
 .big{font-size:42px;font-weight:1000;letter-spacing:.5px}
 .small{font-size:12px;color:var(--muted);margin-top:6px}
-.smallLine{font-size:12px;color:var(--muted);margin-top:8px; text-align:center}
+.smallLine{font-size:12px;color:rgba(148,163,184,0.88);margin-top:8px;text-align:center}
 .summaryLine{
   margin-top:12px; padding-top:12px; border-top:1px dashed rgba(35,48,86,.85);
   text-align:left; line-height:1.55; color:#cbd5f5; font-weight:800;
 }
 .summaryLine span{font-weight:900;}
 /* Risk bar */
-.riskRow{margin-top:10px; display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+.riskRow{margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .riskBadge{display:inline-block;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:900;}
 .riskBadge.good{background:#052e16;color:#22c55e}
 .riskBadge.mid{background:#3a2503;color:#f59e0b}
 .riskBadge.high{background:#3b0a0a;color:#ef4444}
-.riskBar{
-  display:flex; gap:6px; align-items:center;
-  padding:6px; border:1px solid rgba(255,255,255,.10); border-radius:999px;
-  background:rgba(255,255,255,.02);
-}
-.seg{width:34px;height:8px;border-radius:99px;opacity:.35}
-.seg.good{background:rgba(34,197,94,.95)}
-.seg.mid{background:rgba(245,158,11,.95)}
-.seg.high{background:rgba(239,68,68,.95)}
-.seg.on{opacity:1; box-shadow:0 0 0 2px rgba(255,255,255,.08) inset;}
 /* CTA button for modal */
 .moreBtn{
   margin-top:10px;
@@ -162,7 +156,8 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   border-bottom:1px solid rgba(35,48,86,.65);
 }
 .numRow:last-child{border-bottom:0}
-.numKey{color:#cbd5f5;font-weight:900}
+.numKey{color:rgba(229,231,235,0.82);font-weight:900;line-height:1.15}
+.numKey .sym{display:inline-block;margin-left:6px;font-weight:900;color:var(--muted)}
 .numVal{text-align:right;font-weight:900; font-variant-numeric: tabular-nums;}
 .numVal .sub{display:block; font-weight:800; color:var(--muted); margin-top:2px;}
 .numVal .sub2{display:block; font-weight:800; color:var(--muted); margin-top:2px;}
@@ -206,6 +201,50 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   .title-logo{width:40px;height:40px;border-radius:10px;}
   .title-text h1{font-size:18px;}
 }
+
+
+/* ===== 新增：停止型態區間條（含指標） ===== */
+.stopTypeWrap{margin-top:12px}
+.stopTypeLabelRow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.stopTypeTitle{font-size:12px;color:rgba(148,163,184,0.88);font-weight:900}
+.stopTypeTag{display:inline-block;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:1000;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03)}
+.stopTypeTag.good{color:#cfe8d2}
+.stopTypeTag.mid{color:#f6e2b5}
+.stopTypeTag.high{color:#f2c2c2}
+
+.stopBar{
+  position:relative;
+  display:flex;
+  height:14px;
+  border-radius:999px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+}
+.stopSeg{flex:1;opacity:.35}
+.stopSeg.good{background:#4f6f52}
+.stopSeg.mid{background:#b48b3c}
+.stopSeg.high{background:#7a2e2e}
+.stopSeg.active{opacity:1}
+
+.stopIndicator{
+  position:absolute;
+  top:-6px;
+  width:2px;
+  height:26px;
+  background:rgba(229,231,235,.95);
+  box-shadow:0 0 0 2px rgba(2,6,23,.65);
+}
+.stopAxis{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:6px;
+  font-size:11px;
+  color:rgba(148,163,184,0.85);
+  font-weight:800;
+}
+/* ===== 結束新增 ===== */
 </style>
 
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -237,10 +276,10 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
         <b>落地速度</b>
         <div class="explain"><span style="font-family:ui-monospace,monospace;font-weight:900">v = √(2 g h)</span></div>
 
-        <b style="display:block;margin-top:10px">停止時間模式（預設）</b>
+        <b style="display:block;margin-top:10px">停止時間模式</b>
         <div class="explain"><span style="font-family:ui-monospace,monospace;font-weight:900">a = v / Δt</span></div>
 
-        <b style="display:block;margin-top:10px">停止距離模式（替代）</b>
+        <b style="display:block;margin-top:10px">停止距離模式</b>
         <div class="explain"><span style="font-family:ui-monospace,monospace;font-weight:900">a = v² / (2 s)</span></div>
 
         <b style="display:block;margin-top:10px">平均衝擊力（含體重）</b>
@@ -265,8 +304,8 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
     <label>模式切換（雙模式）</label>
     <div class="toggle">
-      <button type="button" id="btnTime" class="active" onclick="setMode('time')">停止時間 Δt（預設）</button>
-      <button type="button" id="btnDist" onclick="setMode('dist')">停止距離 s（替代）</button>
+      <button type="button" id="btnTime" class="active" onclick="setMode('time')">停止時間 Δt</button>
+      <button type="button" id="btnDist" onclick="setMode('dist')">停止距離 s</button>
     </div>
     <div class="hintInline">使用建議：先用 Δt 抓住「停止越快越危險」，再切換 s 做對照。</div>
 
@@ -346,12 +385,25 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
       <div class="riskRow" id="riskRow" style="display:none">
         <span id="riskBadge" class="riskBadge mid">—</span>
-        <span class="riskBar" aria-label="風險等級色標">
-          <span class="seg good" id="segGood"></span>
-          <span class="seg mid"  id="segMid"></span>
-          <span class="seg high" id="segHigh"></span>
-        </span>
       </div>
+
+      <!-- ===== 新增：停止型態區間條（含指標） ===== -->
+      <div class="stopTypeWrap" id="stopTypeWrap" style="display:none">
+        <div class="stopTypeLabelRow">
+          <div class="stopTypeTitle">停止型態區間（依 G 值 × 峰值放大效應）</div>
+          <span id="stopTypeTag" class="stopTypeTag mid">—</span>
+        </div>
+        <div class="stopBar" style="margin-top:8px">
+          <div class="stopSeg good" id="stopSegGood"></div>
+          <div class="stopSeg mid"  id="stopSegMid2"></div>
+          <div class="stopSeg high" id="stopSegHigh2"></div>
+          <div class="stopIndicator" id="stopIndicator" style="left:0%"></div>
+        </div>
+        <div class="stopAxis">
+          <span>吸能主導</span><span>動態載荷</span><span>高衝擊</span>
+        </div>
+      </div>
+      <!-- ===== 結束新增 ===== -->
 
       <div class="summaryLine" id="summaryLine" style="display:none">—</div>
 
@@ -362,23 +414,23 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       <!-- 數值區（同一外框，橫式兩欄） -->
       <div class="numBox" id="numBox" style="display:none">
         <div class="numRow">
-          <div class="numKey">落地速度 v</div>
+          <div class="numKey">落地速度 <span class="sym">v</span></div>
           <div class="numVal" id="outV">—</div>
         </div>
         <div class="numRow">
-          <div class="numKey">減速度 a</div>
+          <div class="numKey">減速度 <span class="sym">a</span></div>
           <div class="numVal" id="outA">—</div>
         </div>
         <div class="numRow">
-          <div class="numKey">G 值（a/g）</div>
+          <div class="numKey">G 值 <span class="sym">(a/g)</span></div>
           <div class="numVal" id="outG2">—</div>
         </div>
         <div class="numRow">
-          <div class="numKey">平均衝擊力 F_avg</div>
+          <div class="numKey">平均衝擊力 <span class="sym">F_avg</span></div>
           <div class="numVal" id="outFav2">—</div>
         </div>
         <div class="numRow">
-          <div class="numKey">峰值衝擊力 F_peak</div>
+          <div class="numKey">峰值衝擊力 <span class="sym">F_peak</span></div>
           <div class="numVal" id="outFpk2">—</div>
         </div>
       </div>
@@ -387,57 +439,145 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
     </div>
   </div>
 
-  <!-- 更多說明（單一層級集中） -->
+  <!-- 更多說明（兩層收合） -->
   <div class="card">
     <details id="moreDetails">
       <summary class="section"><span>更多說明</span></summary>
       <div class="explain">
-        <div class="muted">這裡是教學庫：需要時一口氣找得到，不需要時不打擾。</div>
 
-        <hr class="dash"/>
-        <b>怎麼最快用（30 秒版）</b>
-        <div class="explain">
-          1) 先用「停止時間 Δt」模式：同一高度下，Δt 越短 → 停止越急 → G 值越高。<br>
-          2) 再切換「停止距離 s」模式：同一高度下，s 越短 → 停止越急 → G 值越高。<br>
-          3) 判讀時先看 G 值抓趨勢，再用峰值衝擊力看「最吃力的那一下」。
-        </div>
+        <details>
+          <summary><span>怎麼最快用（30 秒版）</span></summary>
+          <div class="explain">
+            1) 先用「停止時間 Δt」模式：同一高度下，Δt 越短 → 停止越急 → G 值越高。<br>
+            2) 再切換「停止距離 s」模式：同一高度下，s 越短 → 停止越急 → G 值越高。<br>
+            3) 判讀時先看 G 值抓趨勢，再用峰值衝擊力看「最吃力的那一下」。
+          </div>
+        </details>
 
-        <hr class="dash"/>
-        <b>名詞白話</b>
-        <div class="explain">
-          • <b>G 值</b>：停止有多急（急煞 vs 慢慢停）。<br>
-          • <b>平均衝擊力</b>：整段停止過程的平均用力。<br>
-          • <b>峰值衝擊力</b>：停止瞬間最大受力（常是最傷、也最考驗系統的那一下）。<br>
-          • <b>峰值倍率 k</b>：把「尖峰」概念帶進來的提醒器，不是安全系數。
-        </div>
+        
+<details style="margin-top:10px">
+  <summary><span>這些數字，其實在說什麼？</span></summary>
+  <div class="explain">
+  <!-- ===== 修改區塊：名詞解釋改為生活化說明（中性、專業、帶身體感） ===== -->
+  <details>
+    <summary><span>G 值：停得有多急（急煞感）</span></summary>
+    <div class="explain">
+      G 值代表減速有多劇烈。更精確地說，G 值描述的是「減速度有多大」——也就是身體被帶停的急迫程度。<br><br>
 
-        <hr class="dash"/>
-        <b>降低風險的方向</b>
-        <div class="explain">
-          你做的所有緩衝與吸能，本質上是在「買時間」：把停止變得更長、更圓緩。<br>
-          常見做法是：延長停止時間、增加吸能距離、分散受力與落點保護。
-        </div>
+      <b>用「倍數重量感」去理解</b><br>
+      • <b>1G</b>：一個人站在地上時，自然承受的重量。<br>
+      • <b>5G</b>：像瞬間被壓上五倍自己的重量。<br>
+      • <b>10G 以上</b>：瞬間衝擊已屬高強度區間，身體與系統承受的負荷會快速放大；對緩衝與吸能條件的要求將變得嚴苛。<br><br>
 
-        <hr class="dash"/>
-        <b>使用聲明</b>
-        <div class="explain">
-          本工具為教學估算與風險溝通參考，不得取代現場判斷、SOP、醫療鑑定與安全保護措施。
-        </div>
+      • <b>G 值低</b>：停止過程比較長，身體有時間跟著慢慢停。<br>
+      • <b>G 值高</b>：停止很短很急，感覺像被瞬間抓住；衝擊會更「尖」、更挑剔保護條件。<br><br>
+
+      <b>舉例（抓住那個身體感）</b><br>
+      • <b>電梯急煞</b>：突然停住的那一下，重心會被拉扯，腳下會「一沉」。<br>
+      • <b>提物絆到台階</b>：原本在前進，卻被台階打斷；那一下會很硬、很急。<br><br>
+
+      <span class="muted">重點：要降低 G 值，就是讓停止更「有時間」發生（延長停止時間或增加停止距離）。</span>
+</div>
+  </details>
+
+  <details style="margin-top:10px">
+    <summary><span>平均衝擊力：整段停下來的「平均承受」</span></summary>
+    <div class="explain">
+      平均衝擊力把整段停止過程的受力「平均」起來看，適合用來比較不同做法的差異。<br><br>
+
+      <b>舉例</b><br>
+      • <b>落在有彈性表面 vs 硬地面</b>：彈性表面會把停止拉長，平均力通常更低；硬地面停止更短，平均力更容易上升。<br><br>
+
+      <span class="muted">重點：平均力讓你看「整段停下來」省不省力、可不可以被系統穩定承受。</span>
+    </div>
+  </details>
+
+  <details style="margin-top:10px">
+    <summary><span>峰值衝擊力：最吃力、最尖的那一下</span></summary>
+    <div class="explain">
+      峰值衝擊力是停止瞬間的最大受力，常常就是最容易造成傷害或讓器材吃緊的那一下。<br>
+      它可以很「尖」：時間很短、但力很大。<br><br>
+
+      <b>舉例</b><br>
+      • <b>背負裝備突然被拉停</b>：重量在身後慣性往前衝，被系統拉停的那一下會很集中、很尖。<br><br>
+
+      <span class="muted">重點：峰值比平均更敏感，越「停得急」、越容易被放大。</span>
+    </div>
+  </details>
+
+  <details style="margin-top:10px">
+    <summary><span>峰值倍率 k：把「尖峰」先算進去</span></summary>
+    <div class="explain">
+      k 用來把「尖峰」概念帶進判讀：同一個平均力，現場停止常會出現更大的瞬間峰值。<br><br>
+
+      <b>舉例</b><br>
+      • 同樣在移動的系統，如果某個瞬間出現「突然卡住 / 硬碰硬」，峰值就會變得更尖。<br><br>
+
+      <span class="muted">提醒：k 不是安全系數；它只是讓估算不要把尖峰忽略掉。</span>
+    </div>
+  </details>
+</div>
+    </details>
+
+    <details style="margin-top:10px">
+      <summary><span>平均衝擊力：整段停下來的「平均承受」</span></summary>
+      <div class="explain">
+        平均衝擊力是把整段停止過程的用力「平均」起來看。<br>
+        <b>例子：</b>同樣從 3 公尺落下，如果一種情況是慢慢停下來，另一種是突然停住，兩者平均力可能差很多。<br>
+        <span class="muted">重點：平均力適合用來做「同條件比較」，看哪個做法比較省力、比較可控。</span>
       </div>
     </details>
+
+    <details style="margin-top:10px">
+      <summary><span>峰值衝擊力：最吃力的那一下</span></summary>
+      <div class="explain">
+        峰值衝擊力是停止瞬間的最大受力，常常就是「最傷、也最挑剔保護」的那一下。<br>
+        <b>例子：</b>你用手接住一個球：如果是柔和地接、手往後帶，力量比較平滑；如果是硬碰硬，會有很尖的一下衝擊。<br>
+        <span class="muted">重點：峰值比平均更敏感，最容易被「停得太急」放大。</span>
+      </div>
+    </details>
+
+    <details style="margin-top:10px">
+      <summary><span>峰值倍率 k：把尖峰概念帶進來</span></summary>
+      <div class="explain">
+        k 用來把「尖峰」這件事帶進判讀：同一個平均力，現場碰撞常會出現更大的瞬間峰值。<br>
+        <b>例子：</b>同樣把桌子往前推，若中途撞到門檻，會突然出現更大的反作用力；那一下就是尖峰。<br>
+        <span class="muted">提醒：k 不是安全系數；它只是幫你在估算時，把「那一下可能更大」先算進去。</span>
+      </div>
+    </details>
+
+  </div>
+</details>
+
+
+        <details style="margin-top:10px">
+          <summary><span>降低風險的方向</span></summary>
+          <div class="explain">
+    你做的所有緩衝與吸能，本質上是在「買時間」：把停止變得更長、更圓緩。<br>
+    常見方向可以分三類（現場好用的那種）：<br>
+    • <b>延長停止時間 / 距離</b>：讓停止更圓緩（吸能條、動態繩段、延長可變形路徑）。<br>
+    • <b>改善落點與接觸面</b>：把「硬碰硬」改成「有變形」或「有滑移」。<br>
+    • <b>繩索系統實務：分攤受力並降低角度放大</b>：能做就做「分攤」，並避免錨點夾角過大造成受力放大（必要時用重新導向、延長主繩段、或增加可吸能元件）。<br>
+    <span class="muted">一句話：讓力變得「更長、更分散、更不尖」。</span>
+</div>
+        </details>
+</div>
+</details>
   </div>
 
   <!-- 開發與版本資訊（獨立卡片：背書） -->
   <div class="card">
-    <div class="section">開發與版本資訊</div>
-    <div class="meta">
-      本工具由 <b>散木團隊</b> 開發製作<br>
+    <details id="devDetails">
+      <summary class="section"><span>開發與版本資訊</span></summary>
+      <div class="meta">
+        本工具由 <b>散木團隊</b> 開發製作<br>
       教學架構與工程判斷／徐世豐<br>
       工具設計與互動介面／吳佩芳（朵朵）<br>
       AI 協作輔助／ChatGPT<br><br>
       <b>本工具之衝擊力模型與情境設定，源自「戰繩」在實務教學中對墜落停止條件與風險溝通的需求。</b><br><br>
-      <b>版本 v1.2.0｜2026</b>
-    </div>
+      <b>版本 v1.2.3｜2026</b>
+      </div>
+    </details>
   </div>
 
   <div class="footer">
@@ -459,35 +599,12 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 </div>
 
 <template id="tpl-fulljudge">
-  <div class="explain">
-    <b>G 值代表停止有多急</b>
-    <div class="hintInline" style="margin-top:6px">
-      G 值越高，代表減速度越大；也就是「越像硬煞」。停止越急，衝擊越尖、越挑剔落點與緩衝。
+  <!-- ===== 修改區塊：完整判讀改為依計算結果動態生成（不再放教學長文） ===== -->
+  <div class="explain" id="fullJudgeDyn">
+    <div class="muted" style="margin-bottom:8px">
+      這裡的判讀會依你本次輸入與計算結果生成，並把數值連回「繩索系統」的受力思考。
     </div>
-
-    <hr class="dash"/>
-    <b>峰值衝擊力代表停止瞬間最大受力</b>
-    <div class="hintInline" style="margin-top:6px">
-      峰值衝擊力是最吃力的那一下。即使平均力不高，只要停得很急，峰值仍可能很尖。
-    </div>
-
-    <hr class="dash"/>
-    <b>若要降低風險</b>
-    <div class="hintInline" style="margin-top:6px">
-      方向很單純：<br>
-      • <b>延長停止時間</b>（讓停下來的過程更長、更圓緩）<br>
-      • <b>增加吸能距離</b>（讓緩衝有空間可以變形、延展、分散）<br>
-      <span style="color:var(--muted)">你做的緩衝與吸能，本質上是在把力「攤開」。</span>
-    </div>
-
-    <hr class="dash"/>
-    <b>本次數值（供對照）</b>
-    <div class="hintInline" style="margin-top:6px">
-      • 模式：<span id="m_mode">—</span><br>
-      • G 值：<span id="m_g">—</span><br>
-      • 平均力：<span id="m_favg">—</span><br>
-      • 峰值衝擊力：<span id="m_fpk">—</span>
-    </div>
+    <div id="fullJudgeContent"></div>
   </div>
 </template>
 
@@ -567,8 +684,82 @@ function riskLabel(Gv){
   return {cls:"high", label:"高（比較尺度）"};
 }
 
+
+/* ===== 新增：停止型態動態判讀（繩索語境） =====
+   核心：同時看 G 值（減速劇烈度）與 (G × k)（峰值放大後的綜合指標）
+   分類：吸能主導型 / 動態載荷型 / 高衝擊型（硬煞特徵）
+===== */
+function classifyStopType(Gv, k){
+  const composite = (Gv || 0) * (k || 1);
+
+  if(Gv < 10 && composite < 30){
+    return {
+      zone: "good",
+      label: "吸能主導型",
+      pro1: "停止時間相對充足",
+      pro2: "動態效應可控",
+      pro3: "系統吸能有效",
+      plain: "不太像瞬間硬停，衝擊較不集中。",
+      composite
+    };
+  }
+  if((Gv >= 10 && Gv < 25) || (composite >= 30 && composite < 70)){
+    return {
+      zone: "mid",
+      label: "動態載荷型",
+      pro1: "動態效應明顯",
+      pro2: "峰值開始主導",
+      pro3: "放大效應需注意",
+      plain: "已進入動態區間，力量可能被放大。",
+      composite
+    };
+  }
+  return {
+    zone: "high",
+    label: "高衝擊型（硬煞特徵）",
+    pro1: "短行程硬煞特徵",
+    pro2: "峰值主導",
+    pro3: "系統負荷可能快速放大",
+    plain: "停止偏硬偏急，系統容易瞬間吃重。",
+    composite
+  };
+}
+
+function updateStopBar(Gv, k){
+  const wrap = document.getElementById("stopTypeWrap");
+  if(!wrap) return null;
+
+  const segG = document.getElementById("stopSegGood");
+  const segM = document.getElementById("stopSegMid2");
+  const segH = document.getElementById("stopSegHigh2");
+  const tag  = document.getElementById("stopTypeTag");
+  const ind  = document.getElementById("stopIndicator");
+
+  const r = classifyStopType(Gv, k);
+  wrap.style.display = "";
+
+  // highlight segment
+  segG.classList.remove("active"); segM.classList.remove("active"); segH.classList.remove("active");
+  if(r.zone==="good") segG.classList.add("active");
+  else if(r.zone==="mid") segM.classList.add("active");
+  else segH.classList.add("active");
+
+  // tag
+  tag.className = "stopTypeTag " + (r.zone==="good" ? "good" : r.zone==="mid" ? "mid" : "high");
+  tag.textContent = r.label;
+
+  // indicator position: based on composite (G×k) mapped to 0–100%
+  // visual scale tuned for typical teaching range; clamp to avoid jitter
+  const MAX_VIS = 100; // 視覺尺度上限（不影響計算，只影響指標位置）
+  const pct = Math.max(0, Math.min(100, (r.composite / MAX_VIS) * 100));
+  if(ind) ind.style.left = pct + "%";
+
+  return r;
+}
+/* ===== 結束新增 ===== */
+
 function summaryText(Gv, mode){
-  if(Gv < 10) return "停止相對不急，衝擊較可控；仍請以落點、姿勢與保護措施為準。";
+  if(Gv < 10) return "這次停止的「減速時間/距離」相對拉長，衝擊比較不像瞬間硬停；但實際風險仍取決於落點、姿勢與保護條件。";
   if(Gv < 25) return (mode==="time")
     ? "停止開始偏急，尖峰力會很挑剔緩衝與落點；若要降低風險，優先把停止時間拉長。"
     : "停止開始偏急，尖峰力會很挑剔緩衝與落點；若要降低風險，優先把停止距離拉長。";
@@ -582,21 +773,138 @@ const modal = document.getElementById("modal");
 const modalBody = document.getElementById("modalBody");
 const openFullJudge = document.getElementById("openFullJudge");
 
+// ===== 修改區塊：記錄本次計算結果，供「完整判讀」動態生成 =====
+let lastCalc = null;
+
+function judgePeakSharpness(Gv, k){
+  // 粗略判斷：G 越高、k 越高，越偏尖峰（教學判讀用，不是器材認證）
+  const s = (Gv || 0) * (k || 1);
+  if(s < 15) return "偏圓緩";
+  if(s < 40) return "中等偏尖";
+  return "偏尖（硬煞特徵明顯）";
+}
+function judgeHardStop(Gv){
+  if(Gv < 10) return "較不像硬煞";
+  if(Gv < 25) return "有硬煞傾向";
+  return "硬煞型態明顯";
+}
+function fmtKN(x){ return isFinite(x) ? (x/1000).toFixed(2) + " kN" : "—"; }
+function fmtBW(F, m){
+  // 以「體重力」做相對尺度（m*g）
+  const bw = m * G_STD;
+  if(!isFinite(F) || !isFinite(bw) || bw<=0) return "—";
+  return (F / bw).toFixed(1) + " ×體重力";
+}
+
+function buildFullJudgeHTML(c){
+  if(!c) return '<div class="muted">尚未計算。</div>';
+
+  const sharp = judgePeakSharpness(c.Gv, c.k);
+  const hardStop = judgeHardStop(c.Gv);
+  const stopType = classifyStopType(c.Gv, c.k);
+
+  const fpk_kN = fmtKN(c.Fpk);
+  const fav_kN = fmtKN(c.Fav);
+
+  // 這裡不推導角度公式（避免工程化），只提供「尺度」與「風險變數」提示
+  const leg_best_kN = fmtKN(c.Fpk * 0.5);
+  const redirect_hint_kN = fmtKN(c.Fpk * 1.2);
+
+  const condLine = (c.mode==="time")
+    ? `停止時間 Δt：${c.dt.toFixed(2)} s（${c.presetLabel || "自訂"}）`
+    : `停止距離 s：${c.s.toFixed(2)} m`;
+
+  let riskDir = "";
+  if(c.Gv < 10){
+    riskDir = `
+      • 維持「可吸能」：避免不必要的硬碰硬（例如讓繩段保有可延展／可滑移的空間）。<br>
+      • 想更保守：把峰值倍率 k 下修/上修做對照，觀察尖峰敏感度。`;
+  }else if(c.Gv < 25){
+    riskDir = `
+      • 優先把停止變「更長」：增加可吸能路徑（延長可變形段、加入吸能條/動態繩段）。<br>
+      • 系統面：能分攤就分攤，並留意錨點夾角不要放大受力（必要時改成重新導向/延長主繩段）。`;
+  }else{
+    riskDir = `
+      • 先把「硬煞」拆掉：延長停止時間/距離，避免短行程硬停。<br>
+      • 系統面：增加吸能元件或延長吸能路徑；並以「分攤 + 低角度」降低單點吃力。<br>
+      • 若有重新導向/邊角：把它當作額外放大點，先做最保守的假設。`;
+  }
+
+  return `
+  <div class="resultShell">
+    <div class="small" style="text-align:center">本次判讀重點</div>
+    <div class="summaryLine" style="display:block">
+      <span>停止型態：</span>${stopType.label} ｜ <span>系統傾向：</span>${hardStop} ｜ <span>峰值尖銳度：</span>${sharp}
+    </div>
+
+    <div class="numBox" style="margin-top:12px">
+      <div class="numRow">
+        <div class="numKey">模式</div>
+        <div class="numVal">${c.mode==="time" ? "停止時間 Δt" : "停止距離 s"}<span class="sub">${condLine}</span></div>
+      </div>
+      <div class="numRow">
+        <div class="numKey">落地速度 <span class="sym">v</span></div>
+        <div class="numVal">${fmtMS(c.v)}<span class="sub">（${fmtKMH(c.v)}）</span></div>
+      </div>
+      <div class="numRow">
+        <div class="numKey">G 值 <span class="sym">(a/g)</span></div>
+        <div class="numVal">${fmtG(c.Gv)}</div>
+      </div>
+      <div class="numRow">
+        <div class="numKey">平均衝擊力 <span class="sym">F_avg</span></div>
+        <div class="numVal">${fav_kN}<span class="sub">${fmtBW(c.Fav, c.m)}</span></div>
+      </div>
+      <div class="numRow">
+        <div class="numKey">峰值衝擊力 <span class="sym">F_peak</span></div>
+        <div class="numVal">${fpk_kN}<span class="sub">${fmtBW(c.Fpk, c.m)}</span></div>
+      </div>
+    </div>
+
+    
+    <hr class="dash"/>
+
+    <b>停止型態判讀（本次）</b>
+    <div class="hintInline" style="margin-top:6px">
+      • ${stopType.pro1}／${stopType.pro2}／${stopType.pro3}<br>
+      • <span class="muted">直覺理解：</span>${stopType.plain}
+    </div>
+
+<hr class="dash"/>
+
+    <b>繩索系統連結（現場思考用）</b>
+    <div class="hintInline" style="margin-top:6px">
+      • <b>錨點受力（主受力點）</b>：可先用本次 <b>峰值衝擊力</b> ${fpk_kN} 作為「可能吃到的尖峰」尺度。<br>
+      • <b>若為雙腿分攤（理想平均）</b>：每腿約 ${leg_best_kN}（但夾角變大會放大，請把角度當作風險變數）。<br>
+      • <b>連接件 / 重新導向</b>：若有改向、邊角或滑輪，受力常比直線更挑剔；可先用 ${redirect_hint_kN} 當作保守提醒值（概念用，不是認證值）。<br>
+      <span class="muted">提示：這裡不取代器材額定與 SOP；目的是把「尖峰」放進系統判讀裡。</span>
+    </div>
+
+    <hr class="dash"/>
+
+    <b>吸能條件與尖峰控制</b>
+    <div class="hintInline" style="margin-top:6px">
+      • <b>停止越短</b> → <b>尖峰越尖</b>：越需要吸能路徑（延展、滑移、變形）來「攤開」力。<br>
+      • 若你發現「平均力不算誇張，但峰值很高」：常代表停止過程偏短、偏硬，或有瞬間卡死點。
+    </div>
+
+    <hr class="dash"/>
+
+    <b>降低風險方向（本次建議）</b>
+    <div class="hintInline" style="margin-top:6px">
+      ${riskDir}
+    </div>
+  </div>`;
+}
+
 function openModalWithTemplate() {
   const tpl = document.getElementById("tpl-fulljudge");
   if(!tpl) return;
+
   modalBody.innerHTML = "";
   modalBody.appendChild(tpl.content.cloneNode(true));
 
-  // inject current values
-  const set = (id, txt) => {
-    const el = modalBody.querySelector("#"+id);
-    if(el) el.textContent = txt;
-  };
-  set("m_mode", (mode==="time") ? "停止時間 Δt" : "停止距離 s");
-  set("m_g", document.getElementById("outG").textContent || "—");
-  set("m_favg", document.getElementById("outFav").textContent || "—");
-  set("m_fpk", document.getElementById("outFpk").textContent || "—");
+  const host = modalBody.querySelector("#fullJudgeContent");
+  if(host) host.innerHTML = buildFullJudgeHTML(lastCalc);
 
   modal.classList.add("show");
   modal.setAttribute("aria-hidden","false");
@@ -667,15 +975,13 @@ function calc(){
   riskBadge.className = "riskBadge " + r.cls;
   riskBadge.textContent = "風險等級：" + r.label;
 
-  // risk segments
-  document.getElementById("segGood").classList.toggle("on", r.cls==="good");
-  document.getElementById("segMid").classList.toggle("on", r.cls==="mid");
-  document.getElementById("segHigh").classList.toggle("on", r.cls==="high");
-
   // Summary line
   const summaryLine = document.getElementById("summaryLine");
   summaryLine.style.display = "";
   summaryLine.textContent = summaryText(Gv, mode);
+
+  // ===== 新增：更新停止型態區間條（含指標） =====
+  try{ updateStopBar(Gv, k); }catch(e){}
 
   // Full judge button
   openFullJudge.style.display = "";
@@ -697,7 +1003,22 @@ function calc(){
     }
   }
 
-  // Auto scroll to result card top
+    // ===== 修改區塊：更新 lastCalc，供完整判讀動態生成 =====
+  let presetLabel = "自訂";
+  if(mode==="time"){
+    const key = (decelPreset && decelPreset.value) ? decelPreset.value : "custom";
+    const p = PRESETS[key] || PRESETS.custom;
+    presetLabel = p.label || "自訂";
+  }
+  lastCalc = {
+    m, h, mode,
+    dt: (mode==="time") ? parseFloat(document.getElementById("dt").value) : null,
+    s: (mode==="dist") ? parseFloat(document.getElementById("s").value) : null,
+    k, v, a, Gv, Fav, Fpk,
+    presetLabel
+  };
+
+// Auto scroll to result card top
   const rc = document.getElementById("resultCard");
   if(rc){
     const jump = () => {
@@ -732,6 +1053,9 @@ function resetAll(){
   document.getElementById("summaryLine").style.display = "none";
   document.getElementById("openFullJudge").style.display = "none";
   document.getElementById("numBox").style.display = "none";
+  const stw = document.getElementById("stopTypeWrap");
+  if(stw){ stw.style.display = "none"; }
+
   const cond = document.getElementById("condLine");
   if(cond){ cond.style.display = "none"; cond.textContent=""; }
 }
@@ -739,7 +1063,7 @@ function resetAll(){
 /* PWA */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("./sw.js?v=120").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
+    navigator.serviceWorker.register("./sw.js?v=123").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
     let reloaded = false;
     navigator.serviceWorker.addEventListener("controllerchange", ()=>{
       if(reloaded) return; reloaded = true; window.location.reload();

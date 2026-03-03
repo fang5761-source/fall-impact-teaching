@@ -308,7 +308,6 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 /* ===== END PATCH v8 ===== */
 
 
-/* ===== PATCH v9：刻度可視化（更清楚）+ 移除白色指標文字 ===== */
 .rangeAxis{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
@@ -344,6 +343,50 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 .stopBar::after{ left:66.666%; }
 .stopBar{ overflow:visible; }
 /* ===== END PATCH v9 ===== */
+
+
+/* ===== PATCH v10：分界數值 + 結果字體一致 + 舉例內容更新 ===== */
+.stopBar .tickLabel{
+  position:absolute;
+  top:14px;
+  transform:translateX(-50%);
+  font-size:12px;
+  font-weight:900;
+  color:rgba(232,240,255,.70);
+  letter-spacing:.02em;
+  pointer-events:none;
+  text-shadow:0 1px 10px rgba(0,0,0,.55);
+}
+.stopBar .tickLabel.t30{ left:33.333%; }
+.stopBar .tickLabel.t70{ left:66.666%; }
+@media (max-width:420px){
+  .stopBar .tickLabel{ font-size:11.5px; top:13px; }
+}
+
+/* 計算結果：字體更清爽、數值盡量同一行 */
+.resultTable, .resultGrid, .kvTable{
+  font-feature-settings:"tnum" 1,"lnum" 1;
+}
+.resultRow .k, .kvRow .k, .resultKey{
+  font-size:15px;
+  font-weight:850;
+  color:rgba(205,215,235,.82);
+}
+.resultRow .v, .kvRow .v, .resultVal{
+  font-size:18px;
+  font-weight:900;
+  color:rgba(242,246,255,.94);
+  white-space:nowrap;
+}
+.resultRow .v small, .kvRow .v small, .resultVal small{
+  font-size:15px;
+  font-weight:850;
+  color:rgba(205,215,235,.78);
+}
+@media (max-width:420px){
+  .resultRow .v, .kvRow .v, .resultVal{ white-space:normal; }
+}
+/* ===== END PATCH v10 ===== */
 
 </style>
 
@@ -490,7 +533,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       <!-- ===== 新增：停止型態區間條（含指標） ===== -->
       <div class="stopTypeWrap" id="stopTypeWrap" style="display:none">
         <div class="stopTypeLabelRow">
-          <div class="stopTypeTitle">停止型態區間（依 G 值 × 峰值放大效應）<span class="muted" style="font-weight:800"></span></div>
+          <div class="stopTypeTitle">停止型態區間（依 G 值 × 峰值放大效應）<div class="smallLine" style="margin-top:6px;color:rgba(200,210,235,.72)">註：風險等級＝綜合強度（以峰值/平均為主）；停止型態＝停止方式（看 G×k 在哪一段）。兩者不同，會同時參考。</div><span class="muted" style="font-weight:800"></span></div>
           <span id="stopTypeTag" class="stopTypeTag mid">—</span>
         </div>
         <div class="stopBar" style="margin-top:8px">
@@ -570,9 +613,14 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
     • <b>1G</b>：一個人站在地上時，自然承受的重量。<br>
     • <b>5G</b>：像瞬間被壓上五倍自己的重量。<br>
     • <b>10G 以上</b>：瞬間衝擊已屬高強度區間，身體與系統承受的負荷會快速放大；對緩衝與吸能條件的要求將變得嚴苛。<br><br>
+    
     <b>舉例（抓住那個身體感）</b><br>
-    • <b>電梯急煞</b>：突然停住的那一下，重心會被拉扯，腳下會「一沉」。<br>
-    • <b>提物絆到台階</b>：原本在前進，卻被台階打斷；那一下會很硬、很急。<br>
+    • 坐公車突然煞車：身體會被往前帶，那一下就是減速感。<br>
+    • 車子撞到減速丘太快：人會被往上拋一下，那是垂直減速。<br>
+    • 跳下階梯時彎膝吸震：如果沒有彎膝，停得更急，G 值更高。<br>
+    • 背重裝突然被繩子拉停：重量把人往前拖，那一瞬間衝擊會放大。<br>
+    • 快走時突然踩空一階：那一下身體會被猛然拉住。<br>
+
     <span class="muted">重點：要降低 G 值，就是讓停止更「有時間」發生（延長停止時間或增加停止距離）。</span>
   </div>
 </details>
@@ -580,28 +628,46 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 <details style="margin-top:10px">
   <summary><span>平均衝擊力：整段停下來的「平均承受」</span></summary>
   <div class="explain">
-    平均衝擊力把整段停止過程的受力「平均」起來看，適合用來比較不同做法的差異。<br>
-    • <b>落在有彈性表面 vs 硬地面</b>：彈性表面會把停止拉長，平均力通常更低；硬地面停止更短，平均力更容易上升。<br>
-    <span class="muted">重點：平均力適合做「同條件比較」，看哪個做法比較省力、比較可控。</span>
-  </div>
+
+    <b>概念：</b>整段停止過程「整體承受」多少。<br><br>
+    <b>生活例子：</b><br>
+    • <b>把球丟到沙地 vs 水泥地</b><br>
+    沙地讓停止時間拉長 → 平均力較低；水泥地停止很短 → 平均力較高。<br>
+    • <b>人跳下來彎膝 vs 直膝</b><br>
+    彎膝＝把停止時間拉長 → 平均力下降。<br><br>
+    <span class="muted">重點：平均力讓你看「整段停下來」的負荷，適合用來比較不同做法的差異。</span>
+
+</div>
 </details>
 
 <details style="margin-top:10px">
   <summary><span>峰值衝擊力：最吃力、最尖的那一下</span></summary>
   <div class="explain">
-    峰值衝擊力是停止瞬間的最大受力。當停止很短、很急時，尖峰會更容易被放大。<br>
-    • <b>背負裝備突然被拉停</b>：那一下會像被「瞬間抓住」，肩帶與固定點會吃到更尖的負荷。<br>
-    <span class="muted">重點：峰值比平均更敏感，最容易被「停得太急」放大。</span>
-  </div>
+
+    <b>概念：</b>那「最硬、最尖」的一下（瞬間最大受力）。<br><br>
+    <b>生活例子：</b><br>
+    • <b>用手去接一顆快速丟來的球</b><br>
+    如果手有順著球往後退 → 峰值下降；如果手僵住 → 峰值瞬間很高。<br>
+    • <b>車子撞到坑洞</b><br>
+    如果避震器正常 → 峰值被吃掉；如果避震壞掉 → 峰值直接傳到車身。<br><br>
+    <span class="muted">重點：峰值最容易決定「那一下吃不吃得住」，對連接件、錨點與保護條件特別敏感。</span>
+
+</div>
 </details>
 
 <details style="margin-top:10px">
   <summary><span>峰值倍率 k：把「尖峰」先算進去</span></summary>
   <div class="explain">
-    k 是用來描述「尖峰放大」的倍率：同樣的平均力下，尖峰越尖，k 越大。<br>
-    • <b>提物絆到台階</b>那一下如果很「硬」，就像尖峰變尖：平均力不一定大很多，但峰值可能明顯拉高。<br>
-    <span class="muted">提醒：k 不是安全系數；它只是讓估算不要把尖峰忽略掉。</span>
-  </div>
+
+    <b>概念：</b>尖峰放大的程度（同樣平均力下，尖峰越尖，k 越大）。<br><br>
+    <b>生活例子：</b><br>
+    • <b>同樣重量的包包：輕輕放下 vs 甩一下再放</b><br>
+    重量一樣，但「甩」會讓瞬間峰值更高 → 這就是 k 變大。<br>
+    • <b>繩索有吸能器 vs 沒有吸能器</b><br>
+    平均力可能差不多；但峰值會被吸能器壓低 → k 變小。<br><br>
+    <span class="muted">提醒：k 不是安全系數；它是在提醒你「尖峰」可能把系統推進更嚴苛的區間。</span>
+
+</div>
 </details>
 
         <details style="margin-top:10px">
@@ -741,7 +807,7 @@ function riskLabel(Gv){
 
 /* ===== 新增：停止型態動態判讀（繩索語境） =====
    核心：同時看 G 值（減速劇烈度）與 (G × k)（峰值放大後的綜合指標）
-   分類：吸能主導型 / 動態載荷型 / 高衝擊型（硬煞特徵）
+   分類：吸能主導型（<30） / 動態載荷型（30–70） / 高衝擊型（硬煞特徵）
 ===== */
 function classifyStopType(Gv, k){
   const composite = (Gv || 0) * (k || 1);
@@ -749,7 +815,7 @@ function classifyStopType(Gv, k){
   if(Gv < 10 && composite < 30){
     return {
       zone: "good",
-      label: "吸能主導型",
+      label: "吸能主導型（<30）",
       pro1: "停止時間相對充足",
       pro2: "動態效應可控",
       pro3: "系統吸能有效",
@@ -760,7 +826,7 @@ function classifyStopType(Gv, k){
   if((Gv >= 10 && Gv < 25) || (composite >= 30 && composite < 70)){
     return {
       zone: "mid",
-      label: "動態載荷型",
+      label: "動態載荷型（30–70）",
       pro1: "動態效應明顯",
       pro2: "峰值開始主導",
       pro3: "放大效應需注意",

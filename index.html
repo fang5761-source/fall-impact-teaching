@@ -2,7 +2,7 @@
 <html lang="zh-Hant-TW">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>墜落衝擊力估算</title>
 
 <!-- PWA -->
@@ -20,6 +20,7 @@
   --goldA:rgba(212,175,55,0.14);--goldB:rgba(212,175,55,0.28);
 }
 *{box-sizing:border-box;}
+html{touch-action:manipulation;-webkit-text-size-adjust:100%;}
 body{
   margin:0; overflow-x:hidden;
   background:radial-gradient(1200px 600px at 10% -20%, #1e293b 0%, transparent 50%),var(--bg);
@@ -64,7 +65,7 @@ select:focus,input:focus{ border-color:rgba(56,189,248,0.65); box-shadow:0 0 0 3
 }
 
 .toggle{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
-.toggle button{
+.toggle button{font-size:16px;
   width:100%; min-height:52px;
   padding:12px 14px;border-radius:999px;border:1px solid var(--line);
   background:#020617;color:#cbd5f5;font-weight:900;
@@ -74,10 +75,10 @@ select:focus,input:focus{ border-color:rgba(56,189,248,0.65); box-shadow:0 0 0 3
 @media (max-width:420px){ .toggle{grid-template-columns:1fr;} }
 
 .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-.quick button{background:#020617;border:1px solid var(--line);color:var(--text);padding:10px;border-radius:999px;font-weight:800;}
+.quick button{background:#020617;border:1px solid var(--line);color:var(--text);padding:10px;border-radius:999px;font-weight:800;font-size:14px;}
 
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.actions button{padding:12px;border-radius:14px;border:0;font-weight:900;font-size:15px}
+.actions button{padding:12px;border-radius:14px;border:0;font-weight:900;font-size:16px}
 .calc{background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#020617}
 .reset{background:#020617;color:#cbd5f5;border:1px solid var(--line)}
 
@@ -91,6 +92,7 @@ details summary{
   cursor:pointer; font-weight:900; color:#cbd5f5; list-style:none;
   display:flex; align-items:center; justify-content:space-between;
   padding:12px 12px; border-radius:12px; margin:-10px -12px;
+  font-size:16px; line-height:1.2; /* PATCH v5: 讓按鈕/標籤字不要太小 */
 }
 details summary::-webkit-details-marker{display:none;}
 details summary::after{content:"▸"; color:var(--muted); transition: transform .15s ease;}
@@ -151,14 +153,17 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   overflow:hidden;
 }
 .numRow{
-  display:flex; align-items:flex-start; justify-content:space-between;
-  gap:12px; padding:10px 12px;
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:start;
+  column-gap:12px;
+  padding:10px 12px;
   border-bottom:1px solid rgba(35,48,86,.65);
 }
 .numRow:last-child{border-bottom:0}
 .numKey{color:rgba(229,231,235,0.82);font-weight:900;line-height:1.15}
 .numKey .sym{display:inline-block;margin-left:6px;font-weight:900;color:var(--muted)}
-.numVal{text-align:right;font-weight:900; font-variant-numeric: tabular-nums;}
+.numVal{text-align:right;font-weight:900; font-variant-numeric: tabular-nums; min-width:130px;} /* PATCH v5: 不同手機寬度下欄位更整齊 */
 .numVal .sub{display:block; font-weight:800; color:var(--muted); margin-top:2px;}
 .numVal .sub2{display:block; font-weight:800; color:var(--muted); margin-top:2px;}
 
@@ -221,19 +226,34 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   border:1px solid rgba(255,255,255,.10);
   background:rgba(255,255,255,.02);
 }
-.stopSeg{flex:1;opacity:.18}
+.stopSeg{flex:1;opacity:.45}
 .stopSeg.good{background:#4f6f52}
 .stopSeg.mid{background:#b48b3c}
 .stopSeg.high{background:#7a2e2e}
-.stopSeg.active{opacity:1; box-shadow: inset 0 0 0 1px rgba(255,255,255,.10), 0 0 10px rgba(255,255,255,.06)}
+.stopSeg.active{opacity:1; box-shadow: inset 0 0 0 1px rgba(255,255,255,.14), 0 0 12px rgba(255,255,255,.08)}
 
 .stopIndicator{
   position:absolute;
   top:-6px;
-  width:2px;
+  width:3px;
   height:26px;
   background:rgba(255,255,255,.95);
   box-shadow:0 0 0 2px rgba(2,6,23,.65);
+  transform:translateX(-50%); /* PATCH v5: 置中指標，避免右端被裁切 */
+  pointer-events:none;
+}
+
+.stopIndicator::after{
+  content:"";
+  position:absolute;
+  top:-3px;
+  left:50%;
+  transform:translateX(-50%);
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.95);
+  box-shadow:0 0 0 3px rgba(2,6,23,.75);
 }
 .stopAxis{
   display:flex;
@@ -267,6 +287,64 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 }
 /* ===== 結束修改 ===== */
 
+
+.rangeAxis{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:0;
+  margin-top:6px;
+  font-size:12.5px;
+  font-weight:850;
+  color:rgba(186,199,230,.68);
+  letter-spacing:.02em;
+}
+.rangeAxis span{
+  text-align:center;
+}
+/* 手機再小一點，避免擠壓 */
+@media (max-width:420px){
+  .rangeAxis{font-size:12px}
+}
+/* ===== END PATCH v8 ===== */
+
+
+/* ===== PATCH v9：刻度可視化（更清楚）+ 移除白色指標文字 ===== */
+.rangeAxis{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  margin-top:8px;
+  font-size:13px;
+  font-weight:900;
+  color:rgba(232,240,255,.82);
+  letter-spacing:.02em;
+}
+.rangeAxis span{
+  text-align:center;
+  padding:4px 6px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+}
+@media (max-width:420px){
+  .rangeAxis{font-size:12.5px}
+}
+/* 額外：在色條上加兩個分界刻痕（30 / 70） */
+.stopBar::before,
+.stopBar::after{
+  content:"";
+  position:absolute;
+  top:-3px;
+  bottom:-3px;
+  width:2px;
+  background:rgba(255,255,255,.28);
+  border-radius:2px;
+  pointer-events:none;
+}
+.stopBar::before{ left:33.333%; }
+.stopBar::after{ left:66.666%; }
+.stopBar{ overflow:visible; }
+/* ===== END PATCH v9 ===== */
+
 </style>
 
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -281,7 +359,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       <div class="title-text">
         <h1>墜落衝擊力估算</h1>
         <div class="title-divider"></div>
-        <div class="subtitle">散木｜現場判斷用（教學估算，非醫療診斷）</div>
+        <div class="subtitle">散木團隊｜教學輔助工具（非醫療診斷）</div>
       </div>
       <img class="title-logo" src="./sunmoon_logo.png" alt="散木團隊 LOGO"/>
     </div>
@@ -412,7 +490,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       <!-- ===== 新增：停止型態區間條（含指標） ===== -->
       <div class="stopTypeWrap" id="stopTypeWrap" style="display:none">
         <div class="stopTypeLabelRow">
-          <div class="stopTypeTitle">停止型態區間（依 G 值 × 峰值放大效應）</div>
+          <div class="stopTypeTitle">停止型態區間（依 G 值 × 峰值放大效應）<span class="muted" style="font-weight:800"></span></div>
           <span id="stopTypeTag" class="stopTypeTag mid">—</span>
         </div>
         <div class="stopBar" style="margin-top:8px">
@@ -421,7 +499,8 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
           <div class="stopSeg high" id="stopSegHigh2"></div>
           <div class="stopIndicator" id="stopIndicator" style="left:0%"></div>
         </div>
-        <div class="stopAxis">
+        
+<div class="stopAxis">
           <span>吸能主導</span><span>動態載荷</span><span>高衝擊</span>
         </div>
       </div>
@@ -477,100 +556,53 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
         </details>
 
         
-<details style="margin-top:10px">
-  <summary><span>這些數字，其實在說什麼？</span></summary>
+
+
+<div style="margin:10px 0 8px;color:rgba(148,163,184,.95);font-weight:800">
+  把它想成一句話：<b>平均</b>看「整段怎麼停」，<b>峰值</b>看「最尖那一下」，<b>G 值</b>看「停得有多急」。
+</div>
+
+<details>
+  <summary><span>G 值：停得有多急（急迫程度）</span></summary>
   <div class="explain">
-  <!-- ===== 修改區塊：名詞解釋改為生活化說明（中性、專業、帶身體感） ===== -->
-  <details>
-    <summary><span>G 值：停得有多急（急煞感）</span></summary>
-    <div class="explain">
-      G 值代表減速有多劇烈。更精確地說，G 值描述的是「減速度有多大」——也就是身體被帶停的急迫程度。<br><br>
-
-      <b>用「倍數重量感」去理解</b><br>
-      • <b>1G</b>：一個人站在地上時，自然承受的重量。<br>
-      • <b>5G</b>：像瞬間被壓上五倍自己的重量。<br>
-      • <b>10G 以上</b>：瞬間衝擊已屬高強度區間，身體與系統承受的負荷會快速放大；對緩衝與吸能條件的要求將變得嚴苛。<br><br>
-
-      • <b>G 值低</b>：停止過程比較長，身體有時間跟著慢慢停。<br>
-      • <b>G 值高</b>：停止很短很急，感覺像被瞬間抓住；衝擊會更「尖」、更挑剔保護條件。<br><br>
-
-      <b>舉例（抓住那個身體感）</b><br>
-      • <b>電梯急煞</b>：突然停住的那一下，重心會被拉扯，腳下會「一沉」。<br>
-      • <b>提物絆到台階</b>：原本在前進，卻被台階打斷；那一下會很硬、很急。<br><br>
-
-      <span class="muted">重點：要降低 G 值，就是讓停止更「有時間」發生（延長停止時間或增加停止距離）。</span>
-</div>
-  </details>
-
-  <details style="margin-top:10px">
-    <summary><span>平均衝擊力：整段停下來的「平均承受」</span></summary>
-    <div class="explain">
-      平均衝擊力把整段停止過程的受力「平均」起來看，適合用來比較不同做法的差異。<br><br>
-
-      <b>舉例</b><br>
-      • <b>落在有彈性表面 vs 硬地面</b>：彈性表面會把停止拉長，平均力通常更低；硬地面停止更短，平均力更容易上升。<br><br>
-
-      <span class="muted">重點：平均力讓你看「整段停下來」省不省力、可不可以被系統穩定承受。</span>
-    </div>
-  </details>
-
-  <details style="margin-top:10px">
-    <summary><span>峰值衝擊力：最吃力、最尖的那一下</span></summary>
-    <div class="explain">
-      峰值衝擊力是停止瞬間的最大受力，常常就是最容易造成傷害或讓器材吃緊的那一下。<br>
-      它可以很「尖」：時間很短、但力很大。<br><br>
-
-      <b>舉例</b><br>
-      • <b>背負裝備突然被拉停</b>：重量在身後慣性往前衝，被系統拉停的那一下會很集中、很尖。<br><br>
-
-      <span class="muted">重點：峰值比平均更敏感，越「停得急」、越容易被放大。</span>
-    </div>
-  </details>
-
-  <details style="margin-top:10px">
-    <summary><span>峰值倍率 k：把「尖峰」先算進去</span></summary>
-    <div class="explain">
-      k 用來把「尖峰」概念帶進判讀：同一個平均力，現場停止常會出現更大的瞬間峰值。<br><br>
-
-      <b>舉例</b><br>
-      • 同樣在移動的系統，如果某個瞬間出現「突然卡住 / 硬碰硬」，峰值就會變得更尖。<br><br>
-
-      <span class="muted">提醒：k 不是安全系數；它只是讓估算不要把尖峰忽略掉。</span>
-    </div>
-  </details>
-</div>
-    </details>
-
-    <details style="margin-top:10px">
-      <summary><span>平均衝擊力：整段停下來的「平均承受」</span></summary>
-      <div class="explain">
-        平均衝擊力是把整段停止過程的用力「平均」起來看。<br>
-        <b>例子：</b>同樣從 3 公尺落下，如果一種情況是慢慢停下來，另一種是突然停住，兩者平均力可能差很多。<br>
-        <span class="muted">重點：平均力適合用來做「同條件比較」，看哪個做法比較省力、比較可控。</span>
-      </div>
-    </details>
-
-    <details style="margin-top:10px">
-      <summary><span>峰值衝擊力：最吃力的那一下</span></summary>
-      <div class="explain">
-        峰值衝擊力是停止瞬間的最大受力，常常就是「最傷、也最挑剔保護」的那一下。<br>
-        <b>例子：</b>你用手接住一個球：如果是柔和地接、手往後帶，力量比較平滑；如果是硬碰硬，會有很尖的一下衝擊。<br>
-        <span class="muted">重點：峰值比平均更敏感，最容易被「停得太急」放大。</span>
-      </div>
-    </details>
-
-    <details style="margin-top:10px">
-      <summary><span>峰值倍率 k：把尖峰概念帶進來</span></summary>
-      <div class="explain">
-        k 用來把「尖峰」這件事帶進判讀：同一個平均力，現場碰撞常會出現更大的瞬間峰值。<br>
-        <b>例子：</b>同樣把桌子往前推，若中途撞到門檻，會突然出現更大的反作用力；那一下就是尖峰。<br>
-        <span class="muted">提醒：k 不是安全系數；它只是幫你在估算時，把「那一下可能更大」先算進去。</span>
-      </div>
-    </details>
-
+    G 值代表減速有多劇烈。更精確地說，G 值描述的是「減速度有多大」——也就是身體被帶停的急迫程度。<br><br>
+    <b>用「倍數重量感」去理解</b><br>
+    • <b>1G</b>：一個人站在地上時，自然承受的重量。<br>
+    • <b>5G</b>：像瞬間被壓上五倍自己的重量。<br>
+    • <b>10G 以上</b>：瞬間衝擊已屬高強度區間，身體與系統承受的負荷會快速放大；對緩衝與吸能條件的要求將變得嚴苛。<br><br>
+    <b>舉例（抓住那個身體感）</b><br>
+    • <b>電梯急煞</b>：突然停住的那一下，重心會被拉扯，腳下會「一沉」。<br>
+    • <b>提物絆到台階</b>：原本在前進，卻被台階打斷；那一下會很硬、很急。<br>
+    <span class="muted">重點：要降低 G 值，就是讓停止更「有時間」發生（延長停止時間或增加停止距離）。</span>
   </div>
 </details>
 
+<details style="margin-top:10px">
+  <summary><span>平均衝擊力：整段停下來的「平均承受」</span></summary>
+  <div class="explain">
+    平均衝擊力把整段停止過程的受力「平均」起來看，適合用來比較不同做法的差異。<br>
+    • <b>落在有彈性表面 vs 硬地面</b>：彈性表面會把停止拉長，平均力通常更低；硬地面停止更短，平均力更容易上升。<br>
+    <span class="muted">重點：平均力適合做「同條件比較」，看哪個做法比較省力、比較可控。</span>
+  </div>
+</details>
+
+<details style="margin-top:10px">
+  <summary><span>峰值衝擊力：最吃力、最尖的那一下</span></summary>
+  <div class="explain">
+    峰值衝擊力是停止瞬間的最大受力。當停止很短、很急時，尖峰會更容易被放大。<br>
+    • <b>背負裝備突然被拉停</b>：那一下會像被「瞬間抓住」，肩帶與固定點會吃到更尖的負荷。<br>
+    <span class="muted">重點：峰值比平均更敏感，最容易被「停得太急」放大。</span>
+  </div>
+</details>
+
+<details style="margin-top:10px">
+  <summary><span>峰值倍率 k：把「尖峰」先算進去</span></summary>
+  <div class="explain">
+    k 是用來描述「尖峰放大」的倍率：同樣的平均力下，尖峰越尖，k 越大。<br>
+    • <b>提物絆到台階</b>那一下如果很「硬」，就像尖峰變尖：平均力不一定大很多，但峰值可能明顯拉高。<br>
+    <span class="muted">提醒：k 不是安全系數；它只是讓估算不要把尖峰忽略掉。</span>
+  </div>
+</details>
 
         <details style="margin-top:10px">
           <summary><span>降低風險的方向</span></summary>
@@ -770,10 +802,22 @@ function updateStopBar(Gv, k){
   tag.className = "stopTypeTag " + (r.zone==="good" ? "good" : r.zone==="mid" ? "mid" : "high");
   tag.textContent = r.label;
 
-  // indicator position: based on composite (G×k) mapped to 0–100%
-  // visual scale tuned for typical teaching range; clamp to avoid jitter
-  const MAX_VIS = 100; // 視覺尺度上限（不影響計算，只影響指標位置）
-  const pct = Math.max(0, Math.min(100, (r.composite / MAX_VIS) * 100));
+  // indicator position:
+  // 目標：composite=30 → 33.33%，composite=70 → 66.67%，>100 也要在紅區末端可見
+  const c = Math.max(0, (r.composite || 0));
+  const a = 30, b = 70, max = 100; // 與 classifyStopType 的門檻語意一致（只影響指標位置，不影響計算）
+  let pct = 0;
+
+  if(c <= a){
+    pct = (c / a) * (100/3);
+  }else if(c <= b){
+    pct = (100/3) + ((c - a) / (b - a)) * (100/3);
+  }else{
+    pct = (200/3) + (Math.min(c, max) - b) / (max - b) * (100/3);
+  }
+
+  // clamp (避免 100% 端點裁切)
+  pct = Math.max(0, Math.min(99, pct));
   if(ind) ind.style.left = pct + "%";
 
   return r;
@@ -1092,6 +1136,24 @@ if("serviceWorker" in navigator){
     });
   });
 }
+
+// ===== 新增：iOS 雙擊放大鎖定（避免誤觸放大） =====
+(function(){
+  // 防雙擊放大（iOS Safari）
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e){
+    const now = Date.now();
+    if(now - lastTouchEnd <= 280){
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, {passive:false});
+
+  // 防雙指縮放
+  document.addEventListener('gesturestart', function(e){ e.preventDefault(); }, {passive:false});
+  document.addEventListener('gesturechange', function(e){ e.preventDefault(); }, {passive:false});
+  document.addEventListener('gestureend', function(e){ e.preventDefault(); }, {passive:false});
+})();
 </script>
 </body>
 </html>

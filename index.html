@@ -114,7 +114,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 .resultShell{
   background:#020617; border:1px solid var(--line); border-radius:var(--r); padding:16px 14px;
 }
-.big{font-size:42px;font-weight:1000;letter-spacing:.5px}
+.big{font-size:clamp(44px,9vw,72px);font-weight:1000;letter-spacing:-0.02em;line-height:1.02;text-align:center;font-variant-numeric:tabular-nums}
 .small{font-size:12px;color:var(--muted);margin-top:6px}
 .smallLine{font-size:12px;color:rgba(148,163,184,0.88);margin-top:8px;text-align:center}
 .summaryLine{
@@ -215,24 +215,24 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 .stopBar{
   position:relative;
   display:flex;
-  height:14px;
+  height:18px;
   border-radius:999px;
   overflow:hidden;
   border:1px solid rgba(255,255,255,.10);
   background:rgba(255,255,255,.02);
 }
-.stopSeg{flex:1;opacity:.35}
+.stopSeg{flex:1;opacity:.18}
 .stopSeg.good{background:#4f6f52}
 .stopSeg.mid{background:#b48b3c}
 .stopSeg.high{background:#7a2e2e}
-.stopSeg.active{opacity:1}
+.stopSeg.active{opacity:1; box-shadow: inset 0 0 0 1px rgba(255,255,255,.10), 0 0 10px rgba(255,255,255,.06)}
 
 .stopIndicator{
   position:absolute;
   top:-6px;
   width:2px;
   height:26px;
-  background:rgba(229,231,235,.95);
+  background:rgba(255,255,255,.95);
   box-shadow:0 0 0 2px rgba(2,6,23,.65);
 }
 .stopAxis{
@@ -245,6 +245,28 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   font-weight:800;
 }
 /* ===== 結束新增 ===== */
+
+/* ===== 修改：降低展開後「卡片層」過多（內層 details 扁平化） ===== */
+.explain details{
+  border:0;
+  background:transparent;
+  padding:0;
+}
+.explain details summary{
+  margin:0;
+  padding:10px 0;
+  border-radius:0;
+  background:transparent;
+}
+.explain details summary:hover{background:transparent}
+.explain details[open] summary{background:transparent}
+.explain details + details{margin-top:12px}
+.explain details:not(:last-child){
+  border-bottom:1px dashed rgba(35,48,86,.75);
+  padding-bottom:10px;
+}
+/* ===== 結束修改 ===== */
+
 </style>
 
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">

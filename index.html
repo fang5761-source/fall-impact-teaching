@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b1220"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="墜落衝擊力">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.webmanifest?v=111">
 
 <style>
 
@@ -22,6 +22,7 @@
 *{box-sizing:border-box;}
 body{
   margin:0;
+  overflow-x:hidden;
   background:radial-gradient(1200px 600px at 10% -20%, #1e293b 0%, transparent 50%),var(--bg);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
@@ -34,6 +35,7 @@ body{
 }
 .card.hero{padding:18px 18px 16px}
 .title-wrap{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.title-text{min-width:0;}
 .title-text h1{margin:0;font-size:20px;font-weight:1000;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .title-divider{
   width:100%;
@@ -78,15 +80,37 @@ input,select{
   color:var(--muted);
 }
 
-.toggle{display:flex;gap:8px;margin-top:6px}
+.toggle{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:6px;
+}
 .toggle button{
-  flex:1;padding:10px;border-radius:999px;border:1px solid var(--line);
-  background:#020617;color:#cbd5f5;font-weight:900
+  width:100%;
+  min-height:52px;
+  padding:12px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#020617;
+  color:#cbd5f5;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:1.15;
+  white-space:normal;
 }
 .toggle button.active{
   background:linear-gradient(135deg,#38bdf8,#0ea5e9);
-  color:#020617;border:0
+  color:#020617;
+  border:0;
 }
+@media (max-width:420px){
+  .toggle{grid-template-columns:1fr;}
+}
+
 .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
 .quick button{
   background:#020617;border:1px solid var(--line);color:var(--text);
@@ -213,6 +237,19 @@ details[open] summary{background:rgba(56,189,248,.06)}
 .tag.mid{background:#3a2503;color:#f59e0b}
 .tag.high{background:#3b0a0a;color:#ef4444}
 
+.tableWrap{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  border-radius:14px;
+}
+.table{min-width:720px;}
+.tableHint{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
 .footer{
   font-size:12px;color:#cbd5f5;
   line-height:1.6;
@@ -227,11 +264,101 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
 
 @media (max-width: 420px){
+  .title-text h1{white-space:normal;}
+  .subtitle{white-space:normal;}
+  .title-text h1{overflow:visible;text-overflow:clip;}
+  .subtitle{overflow:visible;text-overflow:clip;}
+
   .title-wrap{gap:10px;}
   .title-logo{width:40px;height:40px;border-radius:10px;}
   .title-text h1{font-size:18px;}
 }
 
+/* ======= Result readability tweaks ======= */
+.kv div:last-child{ text-align:right; font-variant-numeric: tabular-nums; }
+select{
+  width:100%;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.02);
+  color:var(--text);
+  outline:none;
+}
+select:focus{ border-color:rgba(56,189,248,0.65); box-shadow:0 0 0 3px rgba(56,189,248,0.15); }
+
+.judgeBox{
+  border:1px solid rgba(212,175,55,0.22);
+  background:rgba(255,255,255,0.02);
+  border-radius:14px;
+  padding:12px;
+}
+.judgeHead{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.judgeTitle{ font-weight:800; letter-spacing:.2px; }
+.judgeToggle{
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.02);
+  color:var(--text);
+  cursor:pointer;
+  font-weight:700;
+}
+.judgeLines{ margin-top:8px; line-height:1.55; }
+.jline{ display:flex; gap:10px; align-items:flex-start; }
+.jdot{ margin-top:7px; width:6px; height:6px; border-radius:99px; background:rgba(255,255,255,0.35); flex:0 0 auto; }
+.jtxt{ flex:1; }
+.jgood .jdot{ background:rgba(34,197,94,0.75); }
+.jmid  .jdot{ background:rgba(245,158,11,0.80); }
+.jhigh .jdot{ background:rgba(239,68,68,0.80); }
+
+/* ======= More info (clean block + modal) ======= */
+.pillRow{ display:flex; flex-wrap:wrap; gap:10px; }
+.pill{
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid rgba(212,175,55,0.28);
+  background:rgba(255,255,255,0.02);
+  color:var(--text);
+  cursor:pointer;
+  font-weight:800;
+}
+.pill:active{ transform:translateY(1px); }
+
+.modal{ position:fixed; inset:0; display:none; z-index:999; }
+.modal.show{ display:block; }
+.modalBack{ position:absolute; inset:0; background:rgba(0,0,0,0.55); }
+.modalCard{
+  position:relative;
+  width:min(720px, calc(100vw - 24px));
+  max-height:calc(100vh - 24px);
+  margin:12px auto;
+  background:rgba(8,13,23,0.98);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.55);
+}
+.modalHead{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:12px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.modalTitle{ font-weight:900; letter-spacing:.2px; }
+.modalClose{
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.02);
+  color:var(--text);
+  cursor:pointer;
+  font-weight:800;
+}
+.modalBody{
+  padding:14px 12px;
+  overflow:auto;
+  max-height:calc(100vh - 120px);
+}
 </style>
 
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -313,36 +440,29 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       </div>
     </div>
 
-    
     <div id="timeBox" style="margin-top:10px">
-      <label>停止時間 Δt（秒）</label>
-
-      <label style="margin-top:8px;color:#cbd5f5">停止情境（比較尺度）</label>
-      <select id="dtScenario" onchange="applyDtScenario()">
-        <option value="hard" selected>硬接觸（硬地/金屬/幾乎沒緩衝）</option>
-        <option value="normal">一般接觸（裝備/背包/護具有一點緩衝）</option>
-        <option value="dynamic">動態繩/減速器（有吸能與延展）</option>
-        <option value="cushion">厚墊/海綿/氣墊（明顯緩衝）</option>
-        <option value="deep">深緩衝（沙地/雪地/多層墊）</option>
-        <option value="custom">自訂（自己輸入秒數）</option>
+      <label>減速條件</label>
+      <select id="decelPreset">
+        <option value="standard">一般接觸（標準現場條件）</option>
+        <option value="hard">硬接觸（地板、水泥、岩壁硬面）</option>
+        <option value="dynamic">動態繩吸能（繩索延展吸收衝擊）</option>
+        <option value="cushion">厚墊緩衝（氣墊、厚軟墊）</option>
+        <option value="custom">自訂（工程判斷）</option>
       </select>
-      <div class="hintInline">這是教學用「比較尺度」：用情境先抓住概念，再用自訂做精細比較。</div>
+      <div class="hintInline">選擇情境會自動帶入一個「停止時間」預設值；若你手動改秒數，情境會自動切換為「自訂」。</div>
 
-      <div id="dtCustomWrap" style="margin-top:10px">
-        <label>自訂停止時間 Δt（秒）</label>
-        <input id="dt" type="number" step="0.01" value="0.06" inputmode="decimal"/>
-        <div class="quick">
-          <button type="button" onclick="adj('dt',-0.05)">-0.05</button>
-          <button type="button" onclick="adj('dt',-0.10)">-0.10</button>
-          <button type="button" onclick="adj('dt',0.05)">+0.05</button>
-          <button type="button" onclick="adj('dt',0.10)">+0.10</button>
-        </div>
-        <div class="hintInline">Δt 越短，<b>a</b> 越大，衝擊力越大。</div>
+      <label style="margin-top:10px">停止時間 Δt（秒）</label>
+      <input id="dt" type="number" step="0.01" value="0.10" inputmode="decimal"/>
+      <div class="quick">
+        <button type="button" onclick="adj('dt',-0.05)">-0.05</button>
+        <button type="button" onclick="adj('dt',-0.10)">-0.10</button>
+        <button type="button" onclick="adj('dt',0.05)">+0.05</button>
+        <button type="button" onclick="adj('dt',0.10)">+0.10</button>
       </div>
+      <div class="hintInline">Δt 越短，<b>a</b> 越大，衝擊力越大。0.05～0.30 秒常用來做「比較尺度」比較。</div>
     </div>
 
     <div id="distBox" style="margin-top:10px; display:none">
- style="margin-top:10px; display:none">
       <label>停止距離 s（m）</label>
       <input id="s" type="number" step="0.01" value="0.20" inputmode="decimal"/>
       <div class="quick">
@@ -362,11 +482,6 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
     </select>
     <div class="hintInline">k 用來提醒使用者：同一個「平均力」，在真實碰撞中常會出現「尖峰」。<span class="pill">k 不是安全系數</span></div>
 
-
-    <label style="margin-top:14px">最弱環節強度（kN，可選）</label>
-    <input id="weakKN" type="number" step="0.1" value="15" inputmode="decimal"/>
-    <div class="hintInline">用來算「系統佔比」：<span class="mono">F_peak / 最弱環節</span>。不知道就先留預設或清空，佔比會顯示「—」。</div>
-
     <div class="actions">
       <button type="button" class="calc" onclick="calc()">計算</button>
       <button type="button" class="reset" onclick="resetAll()">重設</button>
@@ -381,244 +496,198 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       <div class="big" id="outFpk">—</div>
       <div class="small">平均力 <span id="outFav">—</span> ｜G 值 <span id="outG">—</span> ｜模式 <span id="outMode">—</span></div>
       <div id="riskBadge" class="badge mid" style="display:none">—</div>
-      <div class="hintInline" id="riskNote" style="margin-top:10px; display:none"></div>
+      <div class="hintInline" id="condLine" style="margin-top:10px; display:none"></div>
+
+<div class="judgeBox" id="judgeBox" style="margin-top:12px; display:none">
+  <div class="judgeHead">
+    <div class="judgeTitle">本次判讀</div>
+    <button type="button" class="judgeToggle" id="judgeToggle" style="display:none">展開 ▾</button>
+  </div>
+  <div class="judgeLines" id="judgeLines"></div>
+</div>
     </div>
 
-    
     <div style="margin-top:14px">
-      <div class="kv kvExplainRow" data-explain="expV" onclick="toggleExplain(this)">
-        <div class="k">落地速度 v</div><div id="outV">—</div>
-      </div>
-      <div id="expV" class="kvExplainText"><b>它是「落地前的快慢」</b>：高度越高，速度越快。想像你從 1 樓跳下來跟 3 樓跳下來，落地那一下的「來勢」完全不同。</div>
-
-      <div class="kv kvExplainRow" data-explain="expA" onclick="toggleExplain(this)">
-        <div class="k">減速度 a</div><div id="outA">—</div>
-      </div>
-      <div id="expA" class="kvExplainText"><b>它是「煞車有多急」</b>：同一個速度，如果在更短時間停下來，a 就更大。就像開車急煞 vs 緩煞，身體被甩的感覺差很多。</div>
-
-      <div class="kv kvExplainRow" data-explain="expG" onclick="toggleExplain(this)">
-        <div class="k">G 值（a/g）</div><div id="outG2">—</div>
-      </div>
-      <div id="expG" class="kvExplainText"><b>它是「身體感受到的急停倍率」</b>：1G 約等於平常站著的感覺；3G 像是被更大力往下壓；越高代表停止越「硬」。</div>
-
-      <div class="kv kvExplainRow" data-explain="expFav" onclick="toggleExplain(this)">
-        <div class="k">平均衝擊力 F_avg</div><div id="outFav2">—</div>
-      </div>
-      <div id="expFav" class="kvExplainText"><b>它是「整段停止過程的平均用力」</b>：像拉著一個人慢慢停下來的「平均手勁」。</div>
-
-      <div class="kv kvExplainRow" data-explain="expFpk" onclick="toggleExplain(this)">
-        <div class="k">峰值衝擊力 F_peak</div><div id="outFpk2">—</div>
-      </div>
-      <div id="expFpk" class="kvExplainText"><b>它是「最尖的那一下」</b>：很多傷害不是輸在平均，而是輸在「那一下尖峰」。所以本工具把 F_peak 放第一優先顯示。</div>
-
-      <div class="kv kvExplainRow" data-explain="expRatio" onclick="toggleExplain(this)">
-        <div class="k">系統佔比（F_peak / 最弱環節）</div>
-        <div><span class="ratioPill"><span class="ratioDot" id="ratioDot"></span><span id="outRatio">—</span></span></div>
-      </div>
-      <div id="expRatio" class="kvExplainText"><b>它是「你把系統用到幾分滿」</b>：例如佔比 75%，表示峰值力已吃掉最弱環節的 75% 強度。越接近 100%，越接近風險邊界。</div>
+      <div class="kv"><div>落地速度 v</div><div id="outV">—</div></div>
+      <div class="kv"><div>減速度 a</div><div id="outA">—</div></div>
+      <div class="kv"><div>G 值（a/g）</div><div id="outG2">—</div></div>
+      <div class="kv"><div>平均衝擊力 F_avg</div><div id="outFav2">—</div></div>
+      <div class="kv"><div>峰值衝擊力 F_peak</div><div id="outFpk2">—</div></div>
     </div>
 
-    <div class="readHintBox" style="margin-top:12px">
-      <div class="readHintTitle">讀法提示</div>
-      <div class="readHintText">先看 <b>G 值</b>（停止有多急） → 再看 <b>F_peak</b>（尖峰有多猛） → 最後看 <b>系統佔比</b>（離邊界多近）。</div>
-    </div>
-
-  </div>
-
-  
-  <div class="card" id="learnHubCard">
-    <details id="learnHub">
-      <summary>教學說明（點開）</summary>
-      <div class="pad">
-
-        <div class="section" style="margin-top:0">版本精神</div>
-        <div class="small">衝擊不是承受，而是管理。</div>
-
-        <div class="section" style="margin-top:14px">先用 30 秒抓住重點</div>
-        <div class="small">
-          1. 同一個高度，落地速度差不多；真正差在「怎麼停下來」。<br>
-          2. 停止越快（Δt 越短 / 緩衝越少），G 值越高，峰值力越尖。<br>
-          3. 本工具先看 <b>G 值</b>（急不急），再看 <b>F_peak</b>（猛不猛），最後看 <b>系統佔比</b>（離邊界多近）。
-        </div>
-
-        <div class="section" style="margin-top:14px">圖解（概念示意）</div>
-        <div class="grid2">
-      <div class="svgBox">
-        <div class="svgTitle">圖 1｜墜落 → 停止：同一高度，停止越快越危險</div>
-        <svg viewBox="0 0 560 240" width="100%" height="220" role="img" aria-label="fall diagram">
-          <defs>
-            <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
-            </marker>
-            <marker id="arrow2" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
-            </marker>
-          </defs>
-          <rect x="18" y="20" width="220" height="170" rx="14" fill="rgba(255,255,255,0.02)" stroke="#233056"/>
-          <rect x="322" y="20" width="220" height="170" rx="14" fill="rgba(255,255,255,0.02)" stroke="#233056"/>
-          <text x="28" y="48" fill="#cbd5f5" font-size="14" font-weight="700">A｜停止慢（Δt 較長）</text>
-          <text x="332" y="48" fill="#cbd5f5" font-size="14" font-weight="700">B｜停止快（Δt 較短）</text>
-
-          <!-- ground lines -->
-          <line x1="28" y1="170" x2="228" y2="170" stroke="#94a3b8" stroke-width="2" opacity="0.6"/>
-          <line x1="332" y1="170" x2="532" y2="170" stroke="#94a3b8" stroke-width="2" opacity="0.6"/>
-
-          <!-- falling object -->
-          <circle cx="128" cy="78" r="12" fill="#38bdf8" opacity="0.9"/>
-          <circle cx="432" cy="78" r="12" fill="#38bdf8" opacity="0.9"/>
-
-          <!-- fall arrows -->
-          <line x1="128" y1="92" x2="128" y2="150" stroke="#38bdf8" stroke-width="3" marker-end="url(#arrow)"/>
-          <line x1="432" y1="92" x2="432" y2="150" stroke="#38bdf8" stroke-width="3" marker-end="url(#arrow)"/>
-
-          <!-- stop blocks -->
-          <rect x="98" y="158" width="60" height="24" rx="8" fill="rgba(56,189,248,0.15)" stroke="#38bdf8"/>
-          <rect x="402" y="158" width="60" height="24" rx="8" fill="rgba(56,189,248,0.15)" stroke="#38bdf8"/>
-
-          <!-- decel arrows (different length) -->
-          <line x1="128" y1="158" x2="128" y2="110" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow2)"/>
-          <line x1="432" y1="158" x2="432" y2="132" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow2)"/>
-
-          <text x="40" y="208" fill="#94a3b8" font-size="13">同高度 → v 相同</text>
-          <text x="40" y="226" fill="#94a3b8" font-size="13">Δt 越短 → a 越大 → F 越大</text>
-        </svg>
-        <div class="hintInline">現場版翻譯：<b>你把他「煞停」得越突然，力就越爆。</b></div>
-      </div>
-
-      <div class="svgBox">
-        <div class="svgTitle">圖 2｜力‑時間：平均力 vs 峰值力（k 的意義）</div>
-        <svg viewBox="0 0 560 240" width="100%" height="220" role="img" aria-label="force time diagram">
-          <rect x="18" y="20" width="524" height="190" rx="14" fill="rgba(255,255,255,0.02)" stroke="#233056"/>
-          <!-- axes -->
-          <line x1="70" y1="182" x2="510" y2="182" stroke="#94a3b8" stroke-width="2" opacity="0.7"/>
-          <line x1="70" y1="182" x2="70" y2="60" stroke="#94a3b8" stroke-width="2" opacity="0.7"/>
-          <text x="76" y="70" fill="#94a3b8" font-size="12">力</text>
-          <text x="482" y="202" fill="#94a3b8" font-size="12">時間</text>
-
-          <!-- average line -->
-          <line x1="92" y1="138" x2="500" y2="138" stroke="#38bdf8" stroke-width="3" opacity="0.7"/>
-          <text x="96" y="130" fill="#cbd5f5" font-size="12" font-weight="700">F_avg</text>
-
-          <!-- peak curve -->
-          <path d="M 92 182 C 170 182, 230 178, 270 160 C 310 138, 335 74, 365 92 C 395 110, 420 150, 500 182"
-                fill="none" stroke="#38bdf8" stroke-width="4"/>
-          <circle cx="350" cy="84" r="6" fill="#38bdf8"/>
-          <text x="368" y="84" fill="#cbd5f5" font-size="12" font-weight="700">F_peak</text>
-
-          <text x="96" y="224" fill="#94a3b8" font-size="13">k = F_peak / F_avg（倍率示意）</text>
-        </svg>
-        <div class="hintInline">工程版翻譯：平均值不會告訴你尖峰；<b>尖峰常是「傷害」的那一下。</b></div>
-      </div>
+    <div class="hintInline" style="margin-top:12px">
+      讀法提示：先看 <b>G 值</b> 理解「停止有多急」，再看 <b>F_peak</b> 理解「尖峰力有多猛」。
     </div>
   </div>
 
-        <div class="section" style="margin-top:14px">名詞解釋（生活化版）</div>
-        <div class="small">
-          <b>v（落地速度）</b>：從多高掉下來帶來的「來勢」。越高越快。<br>
-          <b>a / G（急停程度）</b>：同樣的速度，<u>停得越急</u>，身體越像被「突然抓住」。急煞比緩煞更難受。<br>
-          <b>F_avg（平均力）</b>：整段停止過程的平均用力。<br>
-          <b>F_peak（峰值力）</b>：最尖的那一下——很多風險就輸在這一下。<br><br>
+  <div class="card">
+  <details id="moreDetails">
+    <summary class="section"><span>更多說明</span></summary>
+    <div class="explain">
+      <div class="muted">這裡是「不常打開、但需要時很快找得到」的教學庫：初學者可看懂，老手可快速校準判斷。</div>
+      <hr class="dash"/>
 
-          <b>停止時間 vs 停止距離</b>：<br>
-          - 停止距離變長（例如落在海綿、氣墊、動態繩延展），通常停止時間也會變長，峰值會更「圓緩」。<br>
-          - 停止距離很短（硬地、金屬、延展性低），停止時間往往更短，峰值更「尖」。<br><br>
-
-          <b>想要降低峰值力，優先可以做三件事：</b><br>
-          1. 落地速度慢一點（高度、提前制動、控制動量）<br>
-          2. 停止距離拉長（海綿、氣墊、繩索延展）<br>
-          3. 停止時間拉長（動態繩、減速裝置、滑動吸能）
-        </div>
-
-        <details id="injuryDetailsHub">
-      <summary>人體承受概念對照（參考）</summary>
-      <div class="pad">
-        <div class="small">此表為<strong>概念性</strong>對照，用來幫助理解「停止時間越短、峰值衝擊越高」的趨勢；並非醫療診斷、傷害鑑定或臨床判讀。</div>
-        <table class="table" style="margin-top:10px">
-          <thead>
-            <tr>
-              <th style="width:16%">區間</th>
-              <th>風險概述</th>
-              <th>常見情境（例）</th>
-              <th>重點提醒</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>0–10 G</strong></td>
-              <td>多數情況下可承受，但仍可能因姿勢、落點或既有傷病而受傷。</td>
-              <td>有緩衝介質、翻滾卸力、停止時間較長。</td>
-              <td>仍需注意落點分散與身體保護；避免「以為安全就放鬆」。</td>
-            </tr>
-            <tr>
-              <td><strong>10–25 G</strong></td>
-              <td>受傷風險明顯上升；若落點集中或停止時間極短，傷害可能加劇。</td>
-              <td>硬地、停止距離短、系統缺乏緩衝。</td>
-              <td>優先增加停止時間／停止距離（緩衝、延長變形、分散受力）。</td>
-            </tr>
-            <tr>
-              <td><strong>25+ G</strong></td>
-              <td>高風險區間；在不利條件下可能造成嚴重傷害。</td>
-              <td>高處落地、尖銳落點、幾乎無緩衝。</td>
-              <td>務必檢視系統緩衝、落點保護與救援流程；以風險控制為優先。</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="pillRow">
+        <button type="button" class="pill" data-open="first">第一次使用</button>
+        <button type="button" class="pill" data-open="diagram">圖解</button>
+        <button type="button" class="pill" data-open="injury">人體承受</button>
+        <button type="button" class="pill" data-open="engineer">工程翻譯</button>
+        <button type="button" class="pill" data-open="usage">使用說明</button>
+        <button type="button" class="pill" data-open="home">加入主畫面</button>
+        <button type="button" class="pill" data-open="version">版本資訊</button>
       </div>
-    </details>
 
-        <details id="ropeLink" style="margin-top:12px">
-          <summary>和繩索系統的連結（怎麼把數字變成判斷）</summary>
-          <div class="pad">
-            <div class="small">
-              把工具算出來的 <b>F_peak</b> 想成「系統瞬間吃到的最大力」。<br>
-              你要做的是：把它對照到「最弱環節」——例如最弱扣件、錨點、摩擦器、繩索段、連接方式、以及當下的角度與方向。<br><br>
-              所以本工具提供「<b>最弱環節強度</b>」欄位，直接算 <b>系統佔比</b>：<br>
-              <span class="mono">佔比 = F_peak / 最弱環節</span><br><br>
-              佔比越高，代表越逼近風險邊界；要降佔比，就回到上面那三件事：慢一點、長一點、柔一點。
-            </div>
-          </div>
-        </details>
+      <button type="button" class="collapseBtn" data-collapse="#moreDetails">收合</button>
+    </div>
+  </details>
+</div>
 
-        <details id="addToHomeHub" style="margin-top:12px">
-      <summary class="section"><span>加入主畫面（PWA / 離線）</span></summary>
-      <div class="explain">
-        你可以直接點開連結使用，不一定要加入主畫面。<br>
-        如果希望像 APP 一樣、並支援離線，請依照下面步驟：<br><br>
-
-        <b>Android（建議：Chrome）</b><br>
-        1. 用 Chrome 開啟此工具連結<br>
-        2. 右上角「⋮」→ <b>安裝應用程式</b> 或 <b>加入主畫面</b><br>
-        3. 安裝後可離線使用（第一次需連網載入）<br><br>
-
-        <b>iOS（iPhone / iPad）</b><br>
-        1. 用 Safari 開啟<br>
-        2. 分享 → <b>加入主畫面</b><br>
-        3. iOS 離線可用程度依版本略有差異，但可做為捷徑使用<br>
-
-        <button type="button" class="collapseBtn" data-collapse="#addToHomeHub">收合</button>
-      </div>
-    </details>
-
-        <details id="devInfoHub" style="margin-top:12px">
-          <summary>開發與版本資訊</summary>
-          <div class="pad">
-            <div class="meta">
-              本工具由 <b>散木團隊</b> 開發製作<br>
-              教學架構與工程判斷／<b>徐世豐</b><br>
-              工具設計與互動介面／吳佩芳（朵朵）<br>
-              AI 協作輔助／ChatGPT<br><br>
-              版本 v1.1.0｜停止情境與教學整合版
-            </div>
-          </div>
-        </details>
-
-      </div>
-    </details>
+<!-- Modal -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modalBack" data-close="1"></div>
+  <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modalHead">
+      <div class="modalTitle" id="modalTitle">—</div>
+      <button type="button" class="modalClose" data-close="1">關閉 ✕</button>
+    </div>
+    <div class="modalBody" id="modalBody"></div>
   </div>
+</div>
+
+<!-- Modal templates (kept inside page for offline use) -->
+<template id="tpl-first">
+  <div class="muted">先不用背公式，先用「趨勢」抓住風險：</div>
+  <div class="hintInline" style="margin-top:10px">
+    1) 先看 <b>G 值</b>：代表「停止有多急」。<br>
+    2) 再看 <b>F_peak</b>：代表「尖峰那一下有多猛」。<br>
+    3) 最後看 <b>改善方向</b>：要降峰值力，通常是把力「攤開」。
+  </div>
+  <hr class="dash"/>
+  <b>課堂一句話</b>
+  <div class="hintInline" style="margin-top:8px">
+    高度決定你進場的速度；停止時間決定你出場的代價。
+  </div>
+</template>
+
+<template id="tpl-diagram">
+  <div class="muted">圖解是用來「看趨勢」，不是讓你背圖。</div>
+  <hr class="dash"/>
+  <div class="hintInline"><b>圖 1</b>：同一高度，停止越快 → G 越高 → 衝擊越大。</div>
+  <div class="hintInline" style="margin-top:6px"><b>圖 2</b>：力‑時間常有尖峰；平均力不會告訴你「那一下」。</div>
+  <div class="hintInline" style="margin-top:10px">（正式版可保留你原本兩張 SVG 圖；此視窗先保留概念重點，畫面更俐落。）</div>
+</template>
+
+<template id="tpl-injury">
+  <div class="small">此表為<strong>概念性</strong>對照，用來幫助理解趨勢；並非醫療診斷、傷害鑑定或臨床判讀。</div>
+  <div class="tableHint">提示：手機可左右滑動表格。</div>
+  <div class="tableWrap" style="margin-top:10px">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width:16%">區間</th>
+          <th>風險概述</th>
+          <th>常見情境（例）</th>
+          <th>重點提醒</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>0–10 G</strong></td>
+          <td>多數情況下可承受，但仍可能因姿勢、落點或既有傷病而受傷。</td>
+          <td>有緩衝介質、翻滾卸力、停止時間較長。</td>
+          <td>仍需注意落點分散與身體保護；避免「以為安全就放鬆」。</td>
+        </tr>
+        <tr>
+          <td><strong>10–25 G</strong></td>
+          <td>受傷風險明顯上升；若落點集中或停止時間極短，傷害可能加劇。</td>
+          <td>硬地、停止距離短、系統缺乏緩衝。</td>
+          <td>優先增加停止時間／停止距離（緩衝、延長變形、分散受力）。</td>
+        </tr>
+        <tr>
+          <td><strong>25+ G</strong></td>
+          <td>高風險區間；在不利條件下可能造成嚴重傷害。</td>
+          <td>高處落地、尖銳落點、幾乎無緩衝。</td>
+          <td>務必檢視系統緩衝、落點保護與救援流程；以風險控制為優先。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template id="tpl-engineer">
+  <b>一、名詞用「生活化」翻譯</b>
+  <div class="hintInline" style="margin-top:8px">
+    • <b>v（落地速度）</b>：你「衝進去」的速度。<br>
+    • <b>Δt（停止時間）</b>：你「煞住」花了多久。<br>
+    • <b>G 值</b>：停止有多急（急煞 vs 慢慢停）。<br>
+    • <b>F_avg（平均力）</b>：整段停止過程的平均用力。<br>
+    • <b>F_peak（峰值力）</b>：最尖的那一下（常是最傷的那一下）。<br>
+    • <b>k（峰值倍率）</b>：把「尖峰」概念帶進來的提醒器。
+  </div>
+
+  <hr class="dash"/>
+  <b>二、停止時間 vs 停止距離（海綿/氣墊的畫面感）</b>
+  <div class="hintInline" style="margin-top:8px">
+    同樣從一樣高掉下來：<br>
+    • 掉在<strong>地板</strong>：幾乎立刻停 → Δt 很短 → 峰值力很尖。<br>
+    • 掉在<strong>海綿/氣墊</strong>：先壓縮一段才停 → 距離更長、時間更長 → 峰值力比較圓緩。<br>
+    結論：你做的所有「保護」與「緩衝」，本質上就是在<strong>買時間</strong>、把力<strong>攤開</strong>。
+  </div>
+
+  <hr class="dash"/>
+  <b>三、要降低峰值力，優先做三件事</b>
+  <div class="hintInline" style="margin-top:8px">
+    1) 降低落地速度（降低高度、提前制動、控制節奏）<br>
+    2) 增加停止距離（緩衝空間、氣墊、延展）<br>
+    3) 拉長停止時間（動態繩、減速裝置、吸能機制）<br>
+    <div class="muted" style="margin-top:8px"><b>版本精神：</b>衝擊不是承受，而是管理。</div>
+  </div>
+</template>
+
+<template id="tpl-usage">
+  <b>使用方式（建議順序）</b>
+  <div class="hintInline" style="margin-top:8px">
+    1) 先用「停止時間模式」帶出趨勢：停止越快 → G 越高 → 越危險。<br>
+    2) 再切「停止距離模式」做對照：停止距離越短 → 越危險。<br>
+    3) 用結果卡的改善方向，對照你現場能做的「緩衝」與「吸能」。
+  </div>
+  <hr class="dash"/>
+  <b>提醒</b>
+  <div class="hintInline" style="margin-top:8px">
+    本工具為工程估算與風險溝通參考，不得取代現場判斷、SOP、醫療鑑定與安全保護措施。
+  </div>
+</template>
+
+<template id="tpl-home">
+  <b>Android（建議：Chrome）</b>
+  <div class="hintInline" style="margin-top:8px">
+    1) 用 Chrome 開啟工具連結<br>
+    2) 右上角「⋮」→ 安裝應用程式 或 加入主畫面<br>
+    3) 安裝後可離線使用（第一次需連網載入）
+  </div>
+  <hr class="dash"/>
+  <b>iOS（iPhone / iPad）</b>
+  <div class="hintInline" style="margin-top:8px">
+    1) 用 Safari 開啟<br>
+    2) 分享 → 加入主畫面<br>
+    3) iOS 離線可用程度依版本略有差異，但可做為捷徑使用
+  </div>
+</template>
+
+<template id="tpl-version">
+  <div class="hintInline">
+    <b>開發與版本資訊</b><br>
+    • 需求設計：徐世豐（徐老師）<br>
+    • UI/教學設計：Wu Fang<br>
+    • 專案：散木（SunMoon）戰繩工具群<br>
+    • 版本：v1.1.1（教學庫整併＋減速條件情境）
+  </div>
+</template>
+
 <div class="footer">
     【使用聲明】本工具為工程估算與風險溝通參考，所有結果皆為估算值，
     不得取代現場判斷、標準作業程序（SOP）、醫療鑑定與安全保護措施。<br>
-    © 2026 SunMoon｜墜落衝擊力估算</div>
+    © 2026 徐世豐 / Wu Fang｜墜落衝擊力教學工具</div>
 </div>
 
 <script>
@@ -632,6 +701,45 @@ const btnDist = document.getElementById("btnDist");
 const timeBox = document.getElementById("timeBox");
 const distBox = document.getElementById("distBox");
 
+const decelPreset = document.getElementById("decelPreset");
+const dtInput = document.getElementById("dt");
+
+const PRESETS = {
+  standard: {label:"一般接觸", dt:0.10},
+  hard: {label:"硬接觸", dt:0.05},
+  dynamic: {label:"動態繩吸能", dt:0.18},
+  cushion: {label:"厚墊緩衝", dt:0.25},
+  custom: {label:"自訂", dt:null}
+};
+
+function setPreset(key, userAction=false){
+  if(!decelPreset) return;
+  decelPreset.value = key;
+  const p = PRESETS[key] || PRESETS.standard;
+  if(p.dt!=null){
+    dtInput.value = p.dt.toFixed(2);
+  }
+}
+
+if(decelPreset){
+  decelPreset.addEventListener("change", ()=>{
+    const key = decelPreset.value;
+    if(key==="custom") return; // keep current dt
+    setPreset(key, true);
+  });
+}
+if(dtInput){
+  dtInput.addEventListener("input", ()=>{
+    // 手動改秒數 → 切到自訂（工程判斷）
+    if(decelPreset && decelPreset.value!=="custom"){
+      decelPreset.value = "custom";
+    }
+  });
+}
+
+// 初始：預設一般接觸
+try{ if(decelPreset) setPreset("standard"); }catch(e){}
+
 function setMode(m){
   mode = m;
   btnTime.classList.toggle("active", m==="time");
@@ -640,6 +748,12 @@ function setMode(m){
   distBox.style.display = (m==="dist") ? "" : "none";
   // 清楚告訴結果是哪個模式
   document.getElementById("outMode").textContent = (m==="time") ? "Δt" : "s";
+  // 切換模式時，先把判讀區收好，避免舊訊息干擾
+  const cond = document.getElementById("condLine");
+  const jb = document.getElementById("judgeBox");
+  if(cond) cond.style.display = "none";
+  if(jb) jb.style.display = "none";
+
 }
 
 function clamp(x, lo, hi){
@@ -676,62 +790,6 @@ function riskClass(Gv){
   return {cls:"high", label:"高（比較尺度）"};
 }
 
-
-function applyDtScenario(){
-  const sel = document.getElementById("dtScenario");
-  const wrap = document.getElementById("dtCustomWrap");
-  const v = sel.value;
-
-  const map = {
-    hard: 0.06,
-    normal: 0.10,
-    dynamic: 0.15,
-    cushion: 0.25,
-    deep: 0.35
-  };
-
-  if(v==="custom"){
-    wrap.style.display = "";
-    return;
-  }
-  wrap.style.display = "none";
-  const dt = map[v] ?? 0.10;
-  document.getElementById("dt").value = dt.toFixed(2);
-}
-
-function toggleExplain(row){
-  const id = row.getAttribute("data-explain");
-  if(!id) return;
-  const box = document.getElementById(id);
-  const isOpen = row.classList.toggle("open");
-  box.style.display = isOpen ? "block" : "none";
-}
-
-function classifyStop(mode, dt, s){
-  // 教學用分級（概念尺度）
-  if(mode==="dist"){
-    if(s<=0.05) return {label:"硬接觸", hint:"緩衝很少，峰值通常更尖。"};
-    if(s<=0.15) return {label:"一般接觸", hint:"有些緩衝，但仍可能出現尖峰。"};
-    if(s<=0.30) return {label:"有緩衝", hint:"緩衝明顯，峰值較圓緩。"};
-    return {label:"深緩衝", hint:"緩衝很充足，峰值通常更圓緩。"};
-  }else{
-    if(dt<=0.08) return {label:"硬接觸", hint:"停止很急，G 值通常偏高。"};
-    if(dt<=0.14) return {label:"一般接觸", hint:"停止偏急，仍可能有尖峰。"};
-    if(dt<=0.22) return {label:"有緩衝", hint:"停止被攤開，峰值較圓緩。"};
-    return {label:"深緩衝", hint:"停止更平順，峰值通常更圓緩。"};
-  }
-}
-
-function ratioBand(r){
-  // r = F_peak / weakest
-  if(!isFinite(r) || r<=0) return {label:"—", cls:"mid", dot:"#94a3b8"};
-  if(r<=0.40) return {label:"低負荷", cls:"low", dot:"#86efac"};
-  if(r<=0.60) return {label:"中低負荷", cls:"low", dot:"#bbf7d0"};
-  if(r<=0.75) return {label:"中負荷", cls:"mid", dot:"#fbbf24"};
-  if(r<=0.90) return {label:"中高負荷", cls:"high", dot:"#fb7185"};
-  return {label:"高負荷", cls:"high", dot:"#ef4444"};
-}
-
 function calc(){
   const m = clamp(parseFloat(document.getElementById("m").value), 1, 200);
   const h = clamp(parseFloat(document.getElementById("h").value), 0, 200);
@@ -742,15 +800,13 @@ function calc(){
 
   const v = Math.sqrt(2 * G_STD * h);
 
-  let a, dt=null, s=null;
-
+  let a;
   if(mode==="time"){
-    applyDtScenario();
-    dt = clamp(parseFloat(document.getElementById("dt").value), 0.01, 5);
+    const dt = clamp(parseFloat(document.getElementById("dt").value), 0.01, 5);
     document.getElementById("dt").value = dt.toFixed(2);
     a = v / dt;
   }else{
-    s = clamp(parseFloat(document.getElementById("s").value), 0.01, 10);
+    const s = clamp(parseFloat(document.getElementById("s").value), 0.01, 10);
     document.getElementById("s").value = s.toFixed(2);
     a = (v*v) / (2*s);
   }
@@ -760,7 +816,7 @@ function calc(){
   const Gv = a / G_STD;
 
   // outputs
-  document.getElementById("outV").innerHTML = fmtMS(v) + "<br><span class='small'>（" + fmtKMH(v) + "）</span>";
+  document.getElementById("outV").textContent = fmtMS(v) + "（" + fmtKMH(v) + "）";
   document.getElementById("outA").textContent = fmtA(a);
   document.getElementById("outG").textContent = fmtG(Gv);
   document.getElementById("outG2").textContent = fmtG(Gv);
@@ -769,82 +825,175 @@ function calc(){
   document.getElementById("outFpk").textContent = fmtN(Fpk);
   document.getElementById("outFpk2").textContent = fmtN(Fpk);
 
-  document.getElementById("outMode").textContent = (mode==="time") ? "Δt" : "s";
-
-  // ratio
-  const weakKN = parseFloat(document.getElementById("weakKN").value);
-  let ratioTxt="—";
-  let ratioVal=NaN;
-  if(isFinite(weakKN) && weakKN>0){
-    ratioVal = Fpk / (weakKN*1000);
-    ratioTxt = (ratioVal*100).toFixed(0) + "%";
-  }
-  document.getElementById("outRatio").textContent = ratioTxt;
-
-  const band = ratioBand(ratioVal);
-  document.getElementById("ratioDot").style.background = band.dot;
-
-  // risk badge (主看 G)
   const r = riskClass(Gv);
   const badge = document.getElementById("riskBadge");
-  const note = document.getElementById("riskNote");
   badge.style.display = "";
   badge.className = "badge " + r.cls;
   badge.textContent = "風險等級：" + r.label;
 
-  // 動態判讀（教學口徑，三段）
-  note.style.display = "";
-  const stop = classifyStop(mode, dt, s);
-  const modeText = (mode==="time") ? `停止時間 Δt = ${dt.toFixed(2)}s` : `停止距離 s = ${s.toFixed(2)}m`;
-  const modeLine = `目前減速條件屬「<b>${stop.label}</b>」等級（${modeText}）。<span class="muted">${stop.hint}</span>`;
-  const line2 = `判讀順序：先看 <b>G 值</b>（停止有多急），再看 <b>F_peak</b>（尖峰有多猛）。k = <b>${k}</b> 代表尖峰倍率（提醒：k 不是安全系數）。`;
-  const line3 = `想讓峰值變「更圓緩」：<b>慢一點</b>（降低落地速度）、<b>長一點</b>（增加停止距離）、<b>柔一點</b>（拉長停止時間／吸能）。`;
-  const ratioLine = (ratioTxt==="—") ? "" : `<div style="margin-top:8px">系統佔比：<b>${ratioTxt}</b>（${band.label}）。越接近 100%，越逼近風險邊界。</div>`;
-
-  note.innerHTML = `<div>${modeLine}</div><div style="margin-top:8px">${line2}</div><div style="margin-top:8px">${line3}</div>${ratioLine}<div class="small" style="margin-top:10px">提醒：本工具為教學與工程估算參考，非醫療診斷或鑑定。</div>`;
-
-  // scroll to result
-  const rc = document.getElementById("resultCard");
-  rc.scrollIntoView({behavior:"smooth", block:"start"});
-  setTimeout(()=>window.scrollBy(0,-10), 180);
+  // 減速條件提示（時間模式才有情境）
+const cond = document.getElementById("condLine");
+if(cond){
+  if(mode==="time"){
+    const key = (decelPreset && decelPreset.value) ? decelPreset.value : "custom";
+    const p = PRESETS[key] || PRESETS.custom;
+    cond.style.display = "";
+    cond.textContent = `目前減速條件屬「${p.label}」等級。`;
+  }else{
+    cond.style.display = "none";
+    cond.textContent = "";
+  }
 }
 
+// 本次判讀（教學口徑：3 行內直接顯示；超過則可展開）
+const jb = document.getElementById("judgeBox");
+const jl = document.getElementById("judgeLines");
+const jt = document.getElementById("judgeToggle");
+
+if(jb && jl){
+  const lines = [];
+  // Line 1: 等級與核心訊號
+  if(Gv < 10) lines.push(`這次屬「低負荷」區間：停止相對不急，系統壓力較可控。`);
+  else if(Gv < 25) lines.push(`這次屬「中負荷」區間：停止開始偏急，峰值力會很挑剔「落點/緩衝」。`);
+  else lines.push(`這次屬「高負荷」區間：停止非常急，尖峰衝擊可能成為傷害與系統風險來源。`);
+
+  // Line 2: 造成原因（依模式）
+  if(mode==="time"){
+    lines.push(`關鍵在 Δt：越短越像「硬煞」，G 值會往上飆。想降風險，優先把停止時間拉長（吸能、延展、緩衝）。`);
+  }else{
+    lines.push(`關鍵在停止距離 s：越短越像「撞牆」，G 值會往上飆。想降風險，優先把停止距離拉長（墊厚、變形、分散）。`);
+  }
+
+  // Line 3: 給現場的連結（不講大道理，講可操作）
+  lines.push(`把 F_peak 當成「最吃力的那一下」：若要更安全，讓力更圓緩（慢一點停、長一點停、攤開停）。`);
+
+  // 如果想補充更多，可以加在這裡（會自動變展開）
+  // lines.push("（補充）...");
+
+  jb.style.display = "";
+  jl.innerHTML = "";
+  const cls = (Gv < 10) ? "jgood" : (Gv < 25) ? "jmid" : "jhigh";
+  jb.className = "judgeBox " + cls;
+
+  const makeLine = (t)=> {
+    const row = document.createElement("div");
+    row.className = "jline " + cls;
+    row.innerHTML = `<div class="jdot"></div><div class="jtxt">${t}</div>`;
+    return row;
+  };
+
+  const SHOW = 3;
+  const render = (expanded=false)=>{
+    jl.innerHTML = "";
+    const take = expanded ? lines.length : Math.min(lines.length, SHOW);
+    for(let i=0;i<take;i++) jl.appendChild(makeLine(lines[i]));
+    if(jt){
+      if(lines.length <= SHOW){
+        jt.style.display = "none";
+      }else{
+        jt.style.display = "";
+        jt.textContent = expanded ? "收合 ▴" : "展開 ▾";
+        jt.dataset.expanded = expanded ? "1" : "0";
+      }
+    }
+  };
+  render(false);
+
+  if(jt){
+    jt.onclick = ()=>{
+      const ex = jt.dataset.expanded==="1";
+      render(!ex);
+    };
+  }
+}
+  document.getElementById("outMode").textContent = (mode==="time") ? "Δt" : "s";
+
+  // 讓結果自動滑到畫面上方：有「跑感」也不用一直往下找（iPhone/Android 都穩） 
+  const rc = document.getElementById("resultCard");
+  if(rc){
+    const jump = () => {
+      const y = rc.getBoundingClientRect().top + window.pageYOffset - 12;
+      try{
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }catch(e){
+        window.scrollTo(0, y);
+      }
+    };
+    // 等 DOM 更新與瀏覽器完成 layout，再捲動（避免 Android 沒反應）
+    requestAnimationFrame(()=>requestAnimationFrame(jump));
+  }
+}
 
 function resetAll(){
   setMode("time");
-
   document.getElementById("m").value = "70";
   document.getElementById("h").value = "3";
+  document.getElementById("dt").value = "0.10";
+  try{ if(decelPreset) decelPreset.value = "standard"; }catch(e){}
   document.getElementById("s").value = "0.20";
   document.getElementById("kSel").value = "2";
-  document.getElementById("weakKN").value = "15";
 
-  const sel = document.getElementById("dtScenario");
-  sel.value = "hard";
-  applyDtScenario();
-
-  // outputs
-  document.getElementById("outV").textContent = "—";
-  const fields = ["outA","outG","outG2","outFav","outFav2","outFpk","outFpk2","outRatio"];
+  const fields = ["outV","outA","outG","outG2","outFav","outFav2","outFpk","outFpk2"];
   for(const id of fields) document.getElementById(id).textContent = "—";
-  document.getElementById("ratioDot").style.background = "#94a3b8";
   document.getElementById("outMode").textContent = "—";
 
-  // hide risk
   const badge = document.getElementById("riskBadge");
-  const note = document.getElementById("riskNote");
   badge.style.display = "none";
   note.style.display = "none";
   badge.textContent = "—";
-  note.innerHTML = "";
-
-  // close explain rows
-  document.querySelectorAll(".kvExplainRow.open").forEach(r=>r.classList.remove("open"));
-  document.querySelectorAll(".kvExplainText").forEach(t=>t.style.display="none");
+  note.textContent = "";
 }
 
-/* collapse buttons */
+/* ======= Modal (teaching library) ======= */
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modalTitle");
+const modalBody = document.getElementById("modalBody");
 
+function openModal(key){
+  if(!modal) return;
+  const map = {
+    first:{title:"第一次使用", tpl:"tpl-first"},
+    diagram:{title:"圖解", tpl:"tpl-diagram"},
+    injury:{title:"人體承受概念對照", tpl:"tpl-injury"},
+    engineer:{title:"工程翻譯", tpl:"tpl-engineer"},
+    usage:{title:"使用說明", tpl:"tpl-usage"},
+    home:{title:"加入主畫面", tpl:"tpl-home"},
+    version:{title:"開發與版本資訊", tpl:"tpl-version"}
+  };
+  const item = map[key];
+  if(!item) return;
+  const tpl = document.getElementById(item.tpl);
+  if(!tpl) return;
+  modalTitle.textContent = item.title;
+  modalBody.innerHTML = "";
+  modalBody.appendChild(tpl.content.cloneNode(true));
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden","false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal(){
+  if(!modal) return;
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden","true");
+  document.body.style.overflow = "";
+}
+
+document.addEventListener("click", (e)=>{
+  const openBtn = e.target.closest("[data-open]");
+  if(openBtn){
+    openModal(openBtn.getAttribute("data-open"));
+    return;
+  }
+  if(e.target.closest("[data-close]")){
+    closeModal();
+  }
+});
+document.addEventListener("keydown", (e)=>{
+  if(e.key==="Escape") closeModal();
+});
+
+/* collapse buttons */
 document.addEventListener("click", function(e){
   const btn = e.target.closest("[data-collapse]");
   if(!btn) return;
@@ -858,9 +1007,12 @@ document.addEventListener("click", function(e){
 /* PWA */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
-    try{ applyDtScenario(); }catch(e){}
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
-  });
+    navigator.serviceWorker.register("./sw.js?v=111").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
+    // 若有新版 SW 接管，強制刷新一次（避免 Android 一直卡舊版）
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+      if(reloaded) return; reloaded = true; window.location.reload();
+    });});
 }
 
 </script>

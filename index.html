@@ -226,7 +226,21 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   border:1px solid rgba(255,255,255,.10);
   background:rgba(255,255,255,.02);
 }
-.stopSeg{flex:1;opacity:.45}
+.stopSeg{opacity:.45}
+.stopSeg.good{flex:0 0 30%}
+.stopSeg.mid{flex:0 0 40%}
+.stopSeg.high{flex:0 0 30%}
+
+.stopTick{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.28);border-radius:2px;pointer-events:none}
+.stopTick.t30{left:30%}
+.stopTick.t70{left:70%}
+
+.stopTickLabel{position:absolute;top:-18px;transform:translateX(-50%);font-size:12px;letter-spacing:.5px;color:rgba(232,236,244,.75);pointer-events:none}
+.stopTickLabel.t30{left:30%}
+.stopTickLabel.t70{left:70%}
+@media (max-width:420px){
+  .stopTickLabel{top:-16px;font-size:11px}
+}
 .stopSeg.good{background:#4f6f52}
 .stopSeg.mid{background:#b48b3c}
 .stopSeg.high{background:#7a2e2e}
@@ -327,24 +341,6 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 @media (max-width:420px){
   .rangeAxis{font-size:12.5px}
 }
-/* 額外：在色條上加兩個分界刻痕（30 / 70） */
-.stopBar::before,
-.stopBar::after{
-  content:"";
-  position:absolute;
-  top:-3px;
-  bottom:-3px;
-  width:2px;
-  background:rgba(255,255,255,.28);
-  border-radius:2px;
-  pointer-events:none;
-}
-.stopBar::before{ left:33.333%; }
-.stopBar::after{ left:66.666%; }
-.stopBar{ overflow:visible; }
-/* ===== END PATCH v9 ===== */
-
-
 /* ===== PATCH v10：分界數值 + 結果字體一致 + 舉例內容更新 ===== */
 .stopBar .tickLabel{
   position:absolute;
@@ -357,8 +353,8 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   pointer-events:none;
   text-shadow:0 1px 10px rgba(0,0,0,.55);
 }
-.stopBar .tickLabel.t30{ left:33.333%; }
-.stopBar .tickLabel.t70{ left:66.666%; }
+.stopBar .tickLabel.t30{ left:30%; }
+.stopBar .tickLabel.t70{ left:70%; }
 @media (max-width:420px){
   .stopBar .tickLabel{ font-size:11.5px; top:13px; }
 }
@@ -537,6 +533,10 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
           <span id="stopTypeTag" class="stopTypeTag mid">—</span>
         </div>
         <div class="stopBar" style="margin-top:8px">
+  <div class="stopTickLabel t30">30</div>
+  <div class="stopTickLabel t70">70</div>
+  <div class="stopTick t30"></div>
+  <div class="stopTick t70"></div>
           <div class="stopSeg good" id="stopSegGood"></div>
           <div class="stopSeg mid"  id="stopSegMid2"></div>
           <div class="stopSeg high" id="stopSegHigh2"></div>
@@ -810,20 +810,25 @@ function riskLabel(Gv){
    分類：吸能主導型（<30） / 動態載荷型（30–70） / 高衝擊型（硬煞特徵）
 ===== */
 function classifyStopType(Gv, k){
+  // 【修改 v14】停止型態以 G×k（峰值放大後的減速強度）為主判準：
+  // - <30：吸能主導
+  // - 30–70：動態載荷
+  // - >=70：高衝擊（硬煞特徵）
+  // 目的：避免 G 值單獨介入造成「白色指標在綠區、膠囊卻顯示中區」的錯亂。
   const composite = (Gv || 0) * (k || 1);
 
-  if(Gv < 10 && composite < 30){
+  if(composite < 30){
     return {
       zone: "good",
       label: "吸能主導型（<30）",
-      pro1: "停止時間相對充足",
-      pro2: "動態效應可控",
-      pro3: "系統吸能有效",
+      pro1: "停止行程相對充足",
+      pro2: "吸能條件較完整",
+      pro3: "峰值較不尖銳",
       plain: "不太像瞬間硬停，衝擊較不集中。",
       composite
     };
   }
-  if((Gv >= 10 && Gv < 25) || (composite >= 30 && composite < 70)){
+  if(composite < 70){
     return {
       zone: "mid",
       label: "動態載荷型（30–70）",
@@ -836,7 +841,7 @@ function classifyStopType(Gv, k){
   }
   return {
     zone: "high",
-    label: "高衝擊型（硬煞特徵）",
+    label: "高衝擊型（>70）",
     pro1: "短行程硬煞特徵",
     pro2: "峰值主導",
     pro3: "系統負荷可能快速放大",
@@ -871,18 +876,10 @@ function updateStopBar(Gv, k){
   // indicator position:
   // 目標：composite=30 → 33.33%，composite=70 → 66.67%，>100 也要在紅區末端可見
   const c = Math.max(0, (r.composite || 0));
-  const a = 30, b = 70, max = 100; // 與 classifyStopType 的門檻語意一致（只影響指標位置，不影響計算）
-  let pct = 0;
+  const max = 100; // 0–100 的比較尺度：指標位置與 30 / 70 的刻度一致
+  let pct = (c / max) * 100;
 
-  if(c <= a){
-    pct = (c / a) * (100/3);
-  }else if(c <= b){
-    pct = (100/3) + ((c - a) / (b - a)) * (100/3);
-  }else{
-    pct = (200/3) + (Math.min(c, max) - b) / (max - b) * (100/3);
-  }
-
-  // clamp (避免 100% 端點裁切)
+  // clamp（避免 100% 端點裁切）
   pct = Math.max(0, Math.min(99, pct));
   if(ind) ind.style.left = pct + "%";
 

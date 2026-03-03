@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b1220"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="墜落衝擊力">
-<link rel="manifest" href="manifest.webmanifest?v=109">
+<link rel="manifest" href="manifest.webmanifest?v=106">
 
 <style>
 
@@ -67,7 +67,12 @@ input,select{
   width:100%;padding:12px;border-radius:14px;border:1px solid var(--line);
   background:#020617;color:var(--text);font-size:15px;
 }
-.hintInline{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.55;overflow-wrap:anywhere;word-break:break-word}
+.hintInline{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:6px;
+  line-height:1.55;
+}
 .hintInline .pill{
   display:inline-block;
   padding:2px 8px;
@@ -77,6 +82,24 @@ input,select{
   margin-left:6px;
   color:var(--muted);
 }
+.hintInline{
+  white-space:normal;
+  overflow-wrap:anywhere;
+  text-align:left;
+}
+.readHintBox{
+  margin-top:14px;
+  padding:12px 14px;
+  border:1px dashed var(--line);
+  border-radius:14px;
+  background:rgba(2,6,23,.35);
+  color:var(--muted);
+  line-height:1.55;
+}
+.readHintBox b{color:var(--text)}
+.riskNote{ text-align:left; }
+.riskNote .noteFoot{display:block; margin-top:6px; color:var(--muted); font-size:.92em;}
+
 
 .toggle{
   display:grid;
@@ -142,15 +165,39 @@ font-size:15px}
 }
 .kv{
   display:grid;
-  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-columns:minmax(120px, 150px) 1fr;
   align-items:center;
   gap:14px;
   padding:12px 14px;
   border-bottom:1px dashed var(--line);
 }
+@media (max-width:380px){
+  .kv{ grid-template-columns:minmax(110px, 140px) 1fr; }
+}
 .kv:last-child{border-bottom:0}
-.kv > div:first-child{color:#cbd5f5;font-weight:900;letter-spacing:.2px}
-.kv > div:last-child{font-weight:950;text-align:right}
+.kv > div:first-child{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.kv .k{
+  font-weight:600;
+  letter-spacing:.2px;
+  white-space:nowrap;
+}
+.kv .v{font-weight:700;text-align:right;white-space:nowrap}
+#outV{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:2px;
+}
+#outV .sub{
+  font-weight:600;
+  font-size:.86em;
+  color:var(--muted);
+}
 
 .kvTagRow{
   display:flex;
@@ -312,92 +359,6 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   .title-row h1{font-size:18px;}
 }
 
-
-/* --- Result help + dynamic interpretation --- */
-.kvL{display:flex;align-items:center;gap:8px;min-width:0}
-.kvLabel{min-width:0;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2;word-break:break-word}
-.q{
-  width:20px;height:20px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.02);
-  color:#cbd5f5;
-  font-weight:1000;
-  font-size:12px;
-  line-height:1;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  flex:0 0 auto;
-  opacity:.75;
-}
-.q:hover{opacity:1;background:rgba(255,255,255,.05)}
-.q:active{transform:scale(.98);background:rgba(255,255,255,.07)}
-.q:focus{outline:2px solid rgba(56,189,248,.35);outline-offset:2px}
-
-.dynBox{
-  margin-top:14px;
-  padding:12px 14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(2,6,23,.6);
-}
-.dynTitle{font-weight:1000;color:#e2e8ff;letter-spacing:.2px;margin-bottom:6px}
-.dynText{font-size:13px;color:#cbd5f5;line-height:1.6}
-.dynTips{margin-top:8px;font-size:12px;color:var(--muted);line-height:1.6}
-.dynBody{display:flex;flex-direction:column;gap:10px;margin-top:10px}
-.dynRow{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02)}
-.dynRowTop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.dynKey{font-weight:950;color:#e5e7ff;letter-spacing:.2px}
-.dynChip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(56,189,248,.08);color:#cfefff;font-weight:900;font-size:12px}
-.dynDesc{color:#cbd5f5;font-size:13px;line-height:1.55}
-.dynAdvice{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px;padding:10px 12px;border:1px dashed var(--line);border-radius:16px;background:rgba(255,255,255,.01);color:var(--muted);font-size:12px;line-height:1.55}
-
-.dynTips .pill{
-  display:inline-block;
-  padding:2px 8px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:#020617;
-  margin-right:6px;
-  color:var(--muted);
-}
-
-/* modal */
-.modal{position:fixed;inset:0;display:none;z-index:9999}
-.modal.show{display:block}
-.modalMask{position:absolute;inset:0;background:rgba(0,0,0,.55)}
-.modalCard{
-  position:relative;
-  max-width:520px;
-  margin:8vh auto 0;
-  background:linear-gradient(180deg,var(--panel),var(--panel2));
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:14px 14px 12px;
-  box-shadow:0 18px 60px rgba(0,0,0,.45);
-}
-@media (max-width:560px){
-  .modalCard{margin:10vh 14px 0}
-}
-.modalHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.modalTitle{font-weight:1000;color:#e2e8ff}
-.modalClose{
-  width:36px;height:36px;border-radius:12px;
-  border:1px solid var(--line);
-  background:#020617;color:#cbd5f5;
-  cursor:pointer;font-weight:1000;
-}
-.modalBody{margin-top:10px;color:#cbd5f5;font-size:13px;line-height:1.65}
-.modalFoot{display:flex;justify-content:flex-end;margin-top:12px}
-.modalOk{
-  padding:10px 12px;border-radius:12px;border:0;
-  background:rgba(56,189,248,.16);
-  color:#e2e8ff;font-weight:1000;cursor:pointer;
-}
-.modalOk:active,.modalClose:active{transform:scale(.99)}
-
 </style>
 
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -528,35 +489,27 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
       <div class="big" id="outFpk">—</div>
       <div class="small">平均力 <span id="outFav">—</span> ｜G 值 <span id="outG">—</span> ｜模式 <span id="outMode">—</span></div>
       <div id="riskBadge" class="badge mid" style="display:none">—</div>
-      <div class="hintInline" id="riskNote" style="margin-top:10px; display:none"></div>
+      <div class="hintInline riskNote" id="riskNote" style="margin-top:10px; display:none"></div>
     </div>
 
     <div class="kvBox">
-<div class="kv"><div class="kvL"><span class="kvLabel">落地速度 v</span><button type="button" class="q" data-help="v" aria-label="落地速度 v 說明">？</button></div><div id="outV">—</div></div>
-      <div class="kv"><div class="kvL"><span class="kvLabel">減速度 a</span><button type="button" class="q" data-help="a" aria-label="減速度 a 說明">？</button></div><div id="outA">—</div></div>
-      <div class="kv"><div class="kvL"><span class="kvLabel">G 值（a/g）</span><button type="button" class="q" data-help="g" aria-label="G 值（a/g） 說明">？</button></div><div id="outG2">—</div></div>
-<div class="kv"><div class="kvL"><span class="kvLabel">平均衝擊力 F_avg</span><button type="button" class="q" data-help="fav" aria-label="平均衝擊力 F_avg 說明">？</button></div><div id="outFav2">—</div></div>
-      <div class="kv"><div class="kvL"><span class="kvLabel">峰值衝擊力 F_peak</span><button type="button" class="q" data-help="fpk" aria-label="峰值衝擊力 F_peak 說明">？</button></div><div id="outFpk2">—</div></div>
-    </div>
-    <div class="dynBox" id="dynBox" style="display:none">
-      <div class="dynTitle">動態判讀（教學用）</div>
-      <div class="dynBody" id="dynBody">
-        <div class="dynRow">
-          <div class="dynRowTop"><span class="dynKey">G 值區間</span><span class="dynChip" id="dynGBand">—</span></div>
-          <div class="dynDesc" id="dynGMsg">—</div>
-        </div>
-        <div class="dynRow">
-          <div class="dynRowTop"><span class="dynKey">峰值區間</span><span class="dynChip" id="dynFBand">—</span></div>
-          <div class="dynDesc" id="dynFMsg">—</div>
-        </div>
-        <div class="dynAdvice"><span class="pill">教學提示</span><span id="dynAdviceText">—</span></div>
+      <div class="kvTagRow">
+        <span class="kvTag">速度與減速</span>
+        <span class="kvTag kvTagGhost">先看 v → a → G</span>
       </div>
-    </div>
-</div>
+      <div class="kv"><div>落地速度 v</div><div id="outV">—</div></div>
+      <div class="kv"><div>減速度 a</div><div id="outA">—</div></div>
+      <div class="kv"><div>G 值（a/g）</div><div id="outG2">—</div></div>
 
-    <div class="hintInline" style="margin-top:12px">
-      讀法提示：先看 <b>G 值</b> 理解「停止有多急」，再看 <b>F_peak</b> 理解「尖峰力有多猛」。
-    </div>
+      <div class="kvTagRow">
+        <span class="kvTag">力量（衝擊）</span>
+        <span class="kvTag kvTagGhost">再看 F_avg / F_peak</span>
+      </div>
+      <div class="kv"><div>平均衝擊力 F_avg</div><div id="outFav2">—</div></div>
+      <div class="kv"><div>峰值衝擊力 F_peak</div><div id="outFpk2">—</div></div>
+    </div></div>
+
+    <div class="readHintBox"><b>讀法提示</b>　先看 <b>G 值</b> 理解「停止有多急」，再看 <b>F_peak</b> 理解「尖峰力有多猛」。</div>
   </div>
 
   <div class="card">
@@ -762,78 +715,10 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
     © 2026 SunMoon｜墜落衝擊力估算</div>
 </div>
 
-
-<div class="modal" id="helpModal" aria-hidden="true">
-  <div class="modalMask" data-close="1"></div>
-  <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-    <div class="modalHead">
-      <div class="modalTitle" id="helpTitle">—</div>
-      <button type="button" class="modalClose" data-close="1" aria-label="關閉">✕</button>
-    </div>
-    <div class="modalBody" id="helpBody">—</div>
-    <div class="modalFoot">
-      <button type="button" class="modalOk" data-close="1">知道了</button>
-    </div>
-  </div>
-</div>
-
-
 <script>
 
 /* ========= Core ========= */
 const G_STD = 9.80665;
-
-/* ========= Result explain (tap ?) ========= */
-const HELP = {
-  v: {
-    t: "落地速度 v",
-    b: "這是「落地瞬間」的速度（由高度 h 決定）。同一高度下，v 是固定的；真正讓衝擊變大/變小的關鍵通常是停止時間 Δt 或停止距離 s。"
-  },
-  a: {
-    t: "減速度 a",
-    b: "這是「把速度煞停」的急迫程度。Δt 模式：a = v/Δt；s 模式：a = v²/(2s)。a 越大，停止越突然。"
-  },
-  g: {
-    t: "G 值（a/g）",
-    b: "G 值是把減速度 a 用重力加速度 g 做比例化：G = a/g。它是教學用的「停止有多急」尺度，不是醫療診斷。"
-  },
-  fav: {
-    t: "平均衝擊力 F_avg",
-    b: "把減速度造成的力加上體重（mg）後得到的平均力：F_avg = m(a+g)。平均值常「看起來比較溫柔」，但不代表沒有尖峰。"
-  },
-  fpk: {
-    t: "峰值衝擊力 F_peak",
-    b: "用倍率 k 把「尖峰」概念帶進來：F_peak = k×F_avg。真實碰撞往往不是平滑平均，而是會有短暫尖峰；那一下常更關鍵。"
-  }
-};
-
-function openHelp(key){
-  const m = document.getElementById("helpModal");
-  const t = document.getElementById("helpTitle");
-  const b = document.getElementById("helpBody");
-  const it = HELP[key];
-  if(!it) return;
-  t.textContent = it.t;
-  b.textContent = it.b;
-  m.classList.add("show");
-  m.setAttribute("aria-hidden","false");
-}
-function closeHelp(){
-  const m = document.getElementById("helpModal");
-  m.classList.remove("show");
-  m.setAttribute("aria-hidden","true");
-}
-document.addEventListener("click", (e)=>{
-  const q = e.target.closest && e.target.closest(".q");
-  if(q){ openHelp(q.getAttribute("data-help")); return; }
-  if(e.target && (e.target.getAttribute("data-close")==="1" || e.target.closest?.("[data-close='1']"))){
-    closeHelp();
-  }
-});
-document.addEventListener("keydown",(e)=>{
-  if(e.key==="Escape") closeHelp();
-});
-
 
 let mode = "time";
 const btnTime = document.getElementById("btnTime");
@@ -911,7 +796,7 @@ function calc(){
   const Gv = a / G_STD;
 
   // outputs
-  document.getElementById("outV").textContent = fmtMS(v) + "（" + fmtKMH(v) + "）";
+  document.getElementById("outV").innerHTML = `<span>${fmtMS(v)}</span><span class="sub">(${fmtKMH(v)})</span>`;
   document.getElementById("outA").textContent = fmtA(a);
   document.getElementById("outG").textContent = fmtG(Gv);
   document.getElementById("outG2").textContent = fmtG(Gv);
@@ -931,39 +816,7 @@ function calc(){
   const core = (mode==="time")
     ? `你現在的 Δt 越短，G 值越高；想讓風險下降，最直接的作法就是「把停止時間拉長」。`
     : `你現在的 s 越短，G 值越高；想讓風險下降，最直接的作法就是「把停止距離拉長」。`;
-  note.textContent = core + `（提醒：這是比較尺度，不是醫療鑑定。）`;
-
-
-  // 動態判讀（依 G / F_peak / 模式）
-  const dynBox = document.getElementById("dynBox");
-  const dynGBand = document.getElementById("dynGBand");
-  const dynGMsg = document.getElementById("dynGMsg");
-  const dynFBand = document.getElementById("dynFBand");
-  const dynFMsg = document.getElementById("dynFMsg");
-  const dynAdviceText = document.getElementById("dynAdviceText");
-  const fpkKN = Fpk/1000;
-
-  let gBand, gMsg;
-  if(Gv < 5){ gBand="0–5G"; gMsg="停止相對溫和（多半有緩衝或停止時間較長）。"; }
-  else if(Gv < 10){ gBand="5–10G"; gMsg="停止開始變急，落點/姿勢會更影響感受。"; }
-  else if(Gv < 25){ gBand="10–25G"; gMsg="停止明顯偏急，衝擊集中，風險感受上升。"; }
-  else { gBand="25G+"; gMsg="停止非常急，尖峰力可能很高，需以風險控制為優先。"; }
-
-  let fBand, fMsg;
-  if(fpkKN < 3){ fBand="<3 kN"; fMsg="峰值屬低量級衝擊。"; }
-  else if(fpkKN < 8){ fBand="3–8 kN"; fMsg="峰值屬中量級衝擊，需注意落點分散與保護。"; }
-  else { fBand=">8 kN"; fMsg="峰值屬高量級衝擊，停止越短越容易出現猛烈尖峰。"; }
-
-  const modeMsg = (mode==="time")
-    ? `目前使用 Δt 模式：Δt = ${document.getElementById("dt").value} 秒。把 Δt 拉長，通常能有效降低 G 與衝擊。`
-    : `目前使用 s 模式：s = ${document.getElementById("s").value} m。把停止距離拉長（緩衝/變形/分散），通常能降低 G 與衝擊。`;
-
-  dynGBand.textContent = gBand;
-  dynGMsg.textContent = gMsg;
-  dynFBand.textContent = fBand;
-  dynFMsg.textContent = fMsg;
-  dynAdviceText.textContent = modeMsg;
-  dynBox.style.display = "";
+  note.innerHTML = `${core}<span class="noteFoot">提醒：這是比較尺度，不是醫療鑑定。</span>`;
 
   document.getElementById("outMode").textContent = (mode==="time") ? "Δt" : "s";
 
@@ -1001,18 +854,6 @@ function resetAll(){
   note.style.display = "none";
   badge.textContent = "—";
   note.textContent = "";
-  const dynBox = document.getElementById("dynBox");
-  if(dynBox) dynBox.style.display = "none";
-  const dynGBand = document.getElementById("dynGBand");
-  const dynGMsg = document.getElementById("dynGMsg");
-  const dynFBand = document.getElementById("dynFBand");
-  const dynFMsg = document.getElementById("dynFMsg");
-  const dynAdviceText = document.getElementById("dynAdviceText");
-  if(dynGBand) dynGBand.textContent = "—";
-  if(dynGMsg) dynGMsg.textContent = "—";
-  if(dynFBand) dynFBand.textContent = "—";
-  if(dynFMsg) dynFMsg.textContent = "—";
-  if(dynAdviceText) dynAdviceText.textContent = "—";
 }
 
 /* collapse buttons */
@@ -1029,7 +870,7 @@ document.addEventListener("click", function(e){
 /* PWA */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("./sw.js?v=109").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
+    navigator.serviceWorker.register("./sw.js?v=106").then((reg)=>{ try{ reg.update(); }catch(e){} }).catch(()=>{});
     // 若有新版 SW 接管，強制刷新一次（避免 Android 一直卡舊版）
     let reloaded = false;
     navigator.serviceWorker.addEventListener("controllerchange", ()=>{

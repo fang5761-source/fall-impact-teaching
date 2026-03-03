@@ -1,5 +1,5 @@
 /* sw.js — simple offline cache for the teaching app */
-const CACHE_NAME = "fall-impact-v109-2026";
+const CACHE_NAME = "fall-impact-v110-2026";
 const ASSETS = [
   "./",
   "./index.html",

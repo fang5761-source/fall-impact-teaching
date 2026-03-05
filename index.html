@@ -871,11 +871,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
   </details>
 </div>
 
-<!-- 共用區塊：使用聲明（最上層、固定顯示） -->
-<div class="footer" style="margin-top:10px">
-  【使用聲明】本工具為教學估算與風險溝通參考，所有結果皆為估算值，
-  不得取代現場判斷、標準作業程序（SOP）、醫療鑑定與安全保護措施。
-</div>
+
 <!-- Modal：完整判讀 -->
 <div aria-hidden="true" class="modal" id="modal">
 <div class="modalBack" data-close="1"></div>
@@ -921,28 +917,7 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
         </div>
       </div>
     </details>
-
-    <details class="details" style="margin-top:10px;">
-      <summary>開發與版本資訊</summary>
-      <div class="detailsBody">
-        <div class="kv">
-          <div class="k">版本</div><div class="v" id="appVersion">v3.4</div>
-          <div class="k">最後更新</div><div class="v" id="appBuild">—</div>
-          <div class="k">團隊</div><div class="v">散木（SunMoon）</div>
-        </div>
-      </div>
-    </details>
-
-    <details class="details" style="margin-top:10px;">
-      <summary>使用聲明</summary>
-      <div class="detailsBody">
-        <div class="hint">
-          本工具為<strong>教學估算</strong>用途，協助理解「停止方式」對衝擊的影響。
-          不作為醫療診斷或法定鑑定依據；實際現場仍需依裝備、地形、姿勢與訓練流程判讀。
-        </div>
-      </div>
-    </details>
-  </section>
+</section>
 <script>
 /* ========= Core ========= */
 const G_STD = 9.80665;
@@ -1828,5 +1803,13 @@ document.addEventListener('dblclick', function(e){
 
 try{ setEntryMode("human"); }catch(e){}
 </script>
+
+
+<!-- 共用區塊：使用聲明（固定顯示） -->
+<div class="footer" style="margin-top:10px">
+  【使用聲明】本工具為教學估算與風險溝通參考，所有結果皆為估算值，
+  不得取代現場判斷、標準作業程序（SOP）、醫療鑑定與安全保護措施。
+</div>
+
 </body>
 </html>

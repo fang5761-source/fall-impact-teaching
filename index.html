@@ -1716,7 +1716,17 @@ function calcHuman(){
     judge.style.borderColor = (lvl==="安全") ? "rgba(34,197,94,.35)" : (lvl==="危險") ? "rgba(245,158,11,.35)" : "rgba(239,68,68,.35)";
   }
 
-  try{ const rc=document.getElementById('humanResultCard'); if(rc) rc.scrollIntoView({behavior:'smooth', block:'start'}); window.scrollBy(0,-12);}catch(e){}
+  try{ const rc=document.getElementById('humanResultCard');
+    if(rc){
+      try{
+        requestAnimationFrame(()=>{
+          const y = rc.getBoundingClientRect().top + window.pageYOffset - 12;
+          window.scrollTo({top: y, behavior:'smooth'});
+        });
+      }catch(e){
+        try{ window.scrollTo(0, rc.offsetTop - 12); }catch(_){}
+      }
+    } window.scrollBy(0,-12);}catch(e){}
 }
 
 function resetHuman(){
@@ -1833,23 +1843,26 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   // Prevent "秒開秒合" on some Android devices (touch + click double toggle)
   // We take over toggling for all <details> elements for consistency.
+  // FIX: 部分 Android / Samsung 裝置會同時觸發多種事件，造成「秒開秒合」。
+  // 策略：只用 click 事件，並加上時間閘（350ms）避免連點/重複觸發。
   document.querySelectorAll('details').forEach((d)=>{
-    const s = d.querySelector('summary');
-    if(!s) return;
-    let lock = false;
-    const toggleOnce = (ev)=>{
+    const summary = d.querySelector('summary');
+    if(!summary) return;
+    let last = 0;
+    // 避免 iOS/Android 的 300ms 雙擊縮放與多次觸發
+    summary.style.touchAction = 'manipulation';
+
+    summary.addEventListener('click', (ev)=>{
       ev.preventDefault();
       ev.stopPropagation();
-      if(lock) return;
-      lock = true;
+      const now = Date.now();
+      if(now - last < 350) return;
+      last = now;
       d.open = !d.open;
-      window.setTimeout(()=>{ lock = false; }, 220);
-    };
-    s.addEventListener('pointerup', toggleOnce, {passive:false});
-    s.addEventListener('click', (ev)=>{ ev.preventDefault(); }, {passive:false});
+    }, {passive:false});
   });
 
-  const s=document.getElementById('btnShare');
+const s=document.getElementById('btnShare');
   if(s) s.addEventListener('click', doShare);
   const i=document.getElementById('btnInstall');
   if(i) i.addEventListener('click', doInstall);

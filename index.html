@@ -1440,16 +1440,8 @@ if("serviceWorker" in navigator){
 // ===== 新增：iOS 雙擊放大鎖定（避免誤觸放大） =====
 (function(){
   // 防雙擊放大（iOS Safari）
-  let lastTouchEnd = 0;
-  document.addEventListener('touchend', function(e){
-    const now = Date.now();
-    if(now - lastTouchEnd <= 280){
-      e.preventDefault();
-    }
-    lastTouchEnd = now;
-  }, {passive:false});
-
-  // 防雙指縮放
+  /* PATCH: 移除 touchend 全域 preventDefault（會吃掉點擊事件，造成手機按鈕無法按） */
+// 防雙指縮放
   document.addEventListener('gesturestart', function(e){ e.preventDefault(); }, {passive:false});
   document.addEventListener('gesturechange', function(e){ e.preventDefault(); }, {passive:false});
   document.addEventListener('gestureend', function(e){ e.preventDefault(); }, {passive:false});
@@ -1892,17 +1884,7 @@ if('serviceWorker' in navigator){
 }
 
 /* ===== iOS：防止快速連點放大（雙擊縮放） ===== */
-let _lastTouchEnd=0;
-document.addEventListener('touchend', function(e){
-  const now=Date.now();
-  if(now - _lastTouchEnd <= 300){
-    // allow on inputs
-    const tag=(e.target && e.target.tagName)||'';
-    if(!['INPUT','TEXTAREA','SELECT'].includes(tag)) e.preventDefault();
-  }
-  _lastTouchEnd=now;
-}, {passive:false});
-
+/* PATCH: 移除 touchend 全域 preventDefault（會吃掉點擊事件，造成手機按鈕無法按） */
 document.addEventListener('dblclick', function(e){
   const tag=(e.target && e.target.tagName)||'';
   if(!['INPUT','TEXTAREA','SELECT'].includes(tag)) e.preventDefault();

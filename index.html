@@ -487,32 +487,6 @@ body.android .bigCard{
   -webkit-backdrop-filter: none !important;
 }
 
-
-/* Samsung Browser 相容性：減少閃爍、避免秒開秒合造成的抖動 */
-body.samsung *{
-  -webkit-tap-highlight-color: transparent;
-}
-body.samsung .card,
-body.samsung .panel,
-body.samsung .glass,
-body.samsung .accordion,
-body.samsung .box,
-body.samsung .section,
-body.samsung .result-card,
-body.samsung .mode-card{
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-body.samsung .card,
-body.samsung .panel,
-body.samsung .glass,
-body.samsung .section{
-  box-shadow: none !important;
-}
-body.samsung *{
-  transition: none !important;
-}
-
 </style>
 <link href="icon-192.png" rel="icon" sizes="192x192" type="image/png"/>
 <link href="icon-512.png" rel="icon" sizes="512x512" type="image/png"/>
@@ -1860,12 +1834,14 @@ function fallbackCopy(text, onDone){
 
 // bind buttons
 document.addEventListener('DOMContentLoaded', ()=>{
+  // Samsung/Android 일부機種對 <details>/<summary> 有「秒開秒合」與閃爍現象：跳過自訂 summary 點擊邏輯，改用原生行為
+  const __ua = navigator.userAgent || '';
+  const __isSamsung = /Android/i.test(__ua) && (/Samsung/i.test(__ua) || /SM-\w+/i.test(__ua));
+
   // Platform hints
   try{
     const ua = navigator.userAgent || '';
-    const isSamsungBrowser = /SamsungBrowser/i.test(ua);
     if(/Android/i.test(ua)) document.body.classList.add('android');
-    if(isSamsungBrowser) document.body.classList.add('samsung');
     if(/iPhone|iPad|iPod/i.test(ua)) document.body.classList.add('ios');
   }catch(e){}
 
@@ -1873,51 +1849,50 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // We take over toggling for all <details> elements for consistency.
   // FIX: 部分 Android / Samsung 裝置會同時觸發多種事件，造成「秒開秒合」。
   // 策略：只用 click 事件，並加上時間閘（350ms）避免連點/重複觸發。
-  (function(){
-    const ua = navigator.userAgent || '';
-    const isSamsungBrowser = /SamsungBrowser/i.test(ua);
-    if(isSamsungBrowser) document.body.classList.add('samsung');
+  if(__isSamsung){
+    // Samsung/部分 Android：使用原生 <details>/<summary> 行為（避免「秒開秒合」與閃爍）
+    document.querySelectorAll('details').forEach((d)=>{ d.open = false; });
+  }else{
+    document.querySelectorAll('details').forEach((d)=>{
+    const summary = d.querySelector('summary');
+    if(!summary) return;
+    let last = 0;
+    // 避免 iOS/Android 的 300ms 雙擊縮放與多次觸發
+    summary.style.touchAction = 'manipulation';
 
-    const allDetails = Array.from(document.querySelectorAll('details'));
-    const closeOthers = (keep)=>{
-      allDetails.forEach((x)=>{
-        if(x !== keep && x.open) x.open = false;
-      });
-    };
+    summary.addEventListener('click', (ev)=>{
+      ev.preventDefault();
+      ev.stopPropagation();
+      const now = Date.now();
+      if(now - last < 350) return;
+      last = now;
+      d.open = !d.open;
+    }, {passive:false});
+  });
+  }
 
-    // Samsung Browser：<details>/<summary> 的 default toggle 時序和其他瀏覽器不太一樣
-    // 我們改用原生 toggle 事件，避免「秒開秒合」
-    if(isSamsungBrowser){
-      allDetails.forEach((d)=>{
-        d.addEventListener('toggle', ()=>{
-          if(d.open) closeOthers(d);
-        });
-      });
-      return;
-    }
+const s=document.getElementById('btnShare');
+  if(s) s.addEventListener('click', doShare);
+  const i=document.getElementById('btnInstall');
+  if(i) i.addEventListener('click', doInstall);
 
-    // 其他瀏覽器：用手動 toggle（可控、可防止雙擊/誤觸）
-    allDetails.forEach((d)=>{
-      const summary = d.querySelector('summary');
-      if(!summary) return;
+  // version/build info
+  const buildEl=document.getElementById('appBuild');
+  if(buildEl){
+    const d=new Date();
+    buildEl.textContent = d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
+  }
+});
 
-      let last = 0;
-      summary.style.touchAction = 'manipulation';
+// Register Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
 
-      summary.addEventListener('click', (ev)=>{
-        ev.preventDefault();
-
-        const now = Date.now();
-        if(now - last < 250) return;
-        last = now;
-
-        const willOpen = !d.open;
-        closeOthers(d);
-        d.open = willOpen;
-      }, {passive:false});
-    });
-  })();
-
+/* ===== iOS：防止快速連點放大（雙擊縮放） ===== */
+let _lastTouchEnd=0;
 document.addEventListener('touchend', function(e){
   const now=Date.now();
   if(now - _lastTouchEnd <= 300){

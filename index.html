@@ -460,6 +460,33 @@ hr.dash{border:0;border-top:1px dashed #233056;margin:12px 0;}
 
 /* small second line for button label */
 .btnSub{display:block;font-size:.82em;opacity:.88;line-height:1.1;margin-top:2px;}
+
+/* --- Mobile polish & stability (Release v5) --- */
+
+.helpContent{ line-height:1.7; }
+.helpContent p{ margin:10px 0; }
+.helpContent .k{ display:block; font-weight:700; margin:14px 0 6px; }
+.helpContent ul{ margin:8px 0 12px 18px; }
+.helpContent li{ margin:6px 0; }
+.helpContent .example{ margin-top:10px; padding:12px 14px; border:1px solid rgba(255,255,255,.10); border-radius:14px; background:rgba(255,255,255,.03); }
+
+@media (max-width: 520px){
+  .actions .calc .btnSub{ display:block; margin-top:4px; font-size:12px; opacity:.85; }
+  .numKey{ font-size:15px; line-height:1.25; }
+  .numVal{ font-size:16px; }
+}
+
+/* Make install/share buttons feel snappy */
+#btnShare.copied{ transform: translateY(1px); filter: brightness(1.08); }
+
+/* Reduce Android repaint flicker from heavy blurs */
+body.android .glass,
+body.android .card,
+body.android .bigCard{
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 </style>
 <link href="icon-192.png" rel="icon" sizes="192x192" type="image/png"/>
 <link href="icon-512.png" rel="icon" sizes="512x512" type="image/png"/>
@@ -1688,6 +1715,8 @@ function calcHuman(){
     judge.style.color = (lvl==="安全") ? "rgba(220,255,230,.96)" : (lvl==="危險") ? "rgba(255,244,220,.98)" : "rgba(255,228,228,.98)";
     judge.style.borderColor = (lvl==="安全") ? "rgba(34,197,94,.35)" : (lvl==="危險") ? "rgba(245,158,11,.35)" : "rgba(239,68,68,.35)";
   }
+
+  try{ const rc=document.getElementById('humanResultCard'); if(rc) rc.scrollIntoView({behavior:'smooth', block:'start'}); window.scrollBy(0,-12);}catch(e){}
 }
 
 function resetHuman(){
@@ -1696,6 +1725,8 @@ function resetHuman(){
   const s = document.getElementById("scenarioH"); if(s) s.value = "pavement";
   const l = document.getElementById("landingH"); if(l) l.value = "feet";
   const rc = document.getElementById("humanResultCard"); if(rc) rc.style.display = "none";
+  try{ const el=document.getElementById('hH'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); window.scrollBy(0,-12);}catch(e){}
+
   const headline = document.getElementById("humanHeadline"); if(headline) headline.textContent = "—";
   const judge = document.getElementById("humanJudge"); if(judge) judge.textContent = "—";
 }
@@ -1735,34 +1766,89 @@ function toast(msg){
   t._h=setTimeout(()=>t.style.opacity='0',1600);
 }
 
+function showToast(msg){ toast(msg); }
+
 async function doShare(){
-  const url = location.href;
-  const title = document.title || '墜落衝擊力估算';
-  try{
-    if(navigator.share){
-      await navigator.share({title, text:'這個教學估算工具我覺得很實用，分享給你：', url});
-      return;
+  const url = window.location.href;
+  const btn = document.getElementById('btnShare');
+  const oldText = btn ? btn.textContent : '';
+
+  const flashCopied = (msg='已複製')=>{
+    if(btn){
+      btn.textContent = msg;
+      btn.classList.add('copied');
+      window.setTimeout(()=>{
+        btn.textContent = oldText || '分享';
+        btn.classList.remove('copied');
+      }, 1200);
     }
-  }catch(e){}
-  // fallback: copy
-  try{
-    await navigator.clipboard.writeText(url);
-    toast('已複製連結，可貼到 LINE');
-  }catch(e){
-    // older iOS fallback
-    const ta=document.createElement('textarea');
-    ta.value=url;
-    ta.style.position='fixed';
-    ta.style.left='-9999px';
-    document.body.appendChild(ta);
-    ta.select();
-    try{ document.execCommand('copy'); toast('已複製連結，可貼到 LINE'); }catch(err){ toast('無法自動複製：請手動複製網址'); }
-    ta.remove();
+    try{ if(navigator.vibrate) navigator.vibrate(20); }catch(e){}
+    showToast('已複製連結');
+  };
+
+  // Prefer native share sheet when available
+  if(navigator.share){
+    navigator.share({ title: document.title, text: '散木團隊｜繩索教學輔助工具', url })
+      .then(()=>showToast('已開啟分享'))
+      .catch(()=>{ /* user cancelled */ });
+    return;
+  }
+
+  // Clipboard fallback
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=>flashCopied()).catch(()=>fallbackCopy(url, flashCopied));
+  }else{
+    fallbackCopy(url, flashCopied);
   }
 }
 
+function fallbackCopy(text, onDone){
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly','');
+    ta.style.position='fixed';
+    ta.style.opacity='0';
+    ta.style.left='-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    onDone && onDone();
+  }catch(e){
+    showToast('複製失敗，請手動複製網址');
+  }
+}
+
+
 // bind buttons
 document.addEventListener('DOMContentLoaded', ()=>{
+  // Platform hints
+  try{
+    const ua = navigator.userAgent || '';
+    if(/Android/i.test(ua)) document.body.classList.add('android');
+    if(/iPhone|iPad|iPod/i.test(ua)) document.body.classList.add('ios');
+  }catch(e){}
+
+  // Prevent "秒開秒合" on some Android devices (touch + click double toggle)
+  // We take over toggling for all <details> elements for consistency.
+  document.querySelectorAll('details').forEach((d)=>{
+    const s = d.querySelector('summary');
+    if(!s) return;
+    let lock = false;
+    const toggleOnce = (ev)=>{
+      ev.preventDefault();
+      ev.stopPropagation();
+      if(lock) return;
+      lock = true;
+      d.open = !d.open;
+      window.setTimeout(()=>{ lock = false; }, 220);
+    };
+    s.addEventListener('pointerup', toggleOnce, {passive:false});
+    s.addEventListener('click', (ev)=>{ ev.preventDefault(); }, {passive:false});
+  });
+
   const s=document.getElementById('btnShare');
   if(s) s.addEventListener('click', doShare);
   const i=document.getElementById('btnInstall');

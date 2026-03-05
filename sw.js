@@ -1,5 +1,5 @@
-/* sw.js — simple offline cache for the teaching app */
-const CACHE_NAME = "fall-impact-v111-2026";
+/* sw.js — offline cache (stable mode) */
+const CACHE_NAME = "fall-impact-v113-2026";
 const ASSETS = [
   "./",
   "./index.html",
@@ -11,30 +11,26 @@ const ASSETS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    )
   );
 });
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  // Only handle GET
   if (req.method !== "GET") return;
 
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
       return fetch(req).then((res) => {
-        // Cache same-origin successful responses
         try {
           const url = new URL(req.url);
           if (url.origin === self.location.origin && res && res.status === 200) {

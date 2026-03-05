@@ -1827,8 +1827,6 @@ function fallbackCopy(text, onDone){
 // bind buttons
 document.addEventListener('DOMContentLoaded', ()=>{
   // Samsung/Android 일부機種對 <details>/<summary> 有「秒開秒合」與閃爍現象：跳過自訂 summary 點擊邏輯，改用原生行為
-  const __ua = navigator.userAgent || '';
-  const __isSamsung = /Android/i.test(__ua) && (/Samsung/i.test(__ua) || /SM-\w+/i.test(__ua));
 
   // Platform hints
   try{
@@ -1837,33 +1835,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(/iPhone|iPad|iPod/i.test(ua)) document.body.classList.add('ios');
   }catch(e){}
 
-  // Prevent "秒開秒合" on some Android devices (touch + click double toggle)
-  // We take over toggling for all <details> elements for consistency.
-  // FIX: 部分 Android / Samsung 裝置會同時觸發多種事件，造成「秒開秒合」。
-  // 策略：只用 click 事件，並加上時間閘（350ms）避免連點/重複觸發。
-  if(__isSamsung){
-    // Samsung/部分 Android：使用原生 <details>/<summary> 行為（避免「秒開秒合」與閃爍）
-    document.querySelectorAll('details').forEach((d)=>{ d.open = false; });
-  }else{
-    document.querySelectorAll('details').forEach((d)=>{
-    const summary = d.querySelector('summary');
-    if(!summary) return;
-    let last = 0;
-    // 避免 iOS/Android 的 300ms 雙擊縮放與多次觸發
-    summary.style.touchAction = 'manipulation';
-
-    summary.addEventListener('click', (ev)=>{
-      ev.preventDefault();
-      ev.stopPropagation();
-      const now = Date.now();
-      if(now - last < 350) return;
-      last = now;
-      d.open = !d.open;
-    }, {passive:false});
-  });
-  }
-
-const s=document.getElementById('btnShare');
+  // <details>/<summary> 使用原生行為（避免 Android 裝置雙事件造成秒開秒合）
+  const s=document.getElementById('btnShare');
   if(s) s.addEventListener('click', doShare);
   const i=document.getElementById('btnInstall');
   if(i) i.addEventListener('click', doInstall);
